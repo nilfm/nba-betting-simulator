@@ -5,7 +5,11 @@
     <body>
         <h1>Today's games</h1>
         {% for game in games %}
+<<<<<<< HEAD
         <div><p>{{ game.away_team }} ({{ game.odds[1] }}) @ {{ game.home_team }} ({{ game.odds[0] }})</p></div>
+=======
+        <div><p>{{ game.away_team }} ({{ game.odds[0] }}) @ {{ game.home_team }} ({{ game.odds[1] }} )</p></div>
+>>>>>>> 032143a9e45f5050d86ef768a1b223e037f2b365
         {% endfor %}
     </body>
 </html>
