@@ -1,0 +1,11 @@
+<html>
+    <head>
+        <title>NBA Betting Simulator</title>
+    </head>
+    <body>
+        <h1>Today's games</h1>
+        {% for game in games %}
+        <div><p>{{ game.away_team }} ({{ game.odds[0] }}) @ {{ game.home_team }} ({{ game.odds[1] }} )</p></div>
+        {% endfor %}
+    </body>
+</html>
