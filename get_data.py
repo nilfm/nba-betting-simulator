@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
+
 import requests
 import json
 from datetime import datetime
 import os
-
 
 API_KEY = "bb3a24a9d37b206d8324f4aecc19e82c"
 URL = f"https://api.the-odds-api.com/v3/odds/?apiKey={API_KEY}&sport=basketball_nba&region=us&mkt=h2h"
