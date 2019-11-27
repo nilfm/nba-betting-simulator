@@ -4,7 +4,6 @@ import json
 import pprint
 from datetime import datetime
 import os
-
 TODAY = datetime.now().strftime('%Y-%m-%d')
 IN_FILE_PATH = f"raw_{TODAY}.txt"
 OUT_FILE_PATH = f"data_{TODAY}.txt"
@@ -28,7 +27,7 @@ def process(game):
     return good_game
 
 def process_data(data):
-    good_data = [process(game) for game in data["data"]]
+    good_data = [process(game) for game in data["data"] if game['sites_count'] > 0]
     return good_data
 
 def write_to_file():
