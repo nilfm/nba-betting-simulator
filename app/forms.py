@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, NumberRange
 from app.models import User
+from flask_login import current_user
+
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators = [DataRequired()])
@@ -27,3 +29,13 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email.')
+
+class BetForm(FlaskForm):
+    amount = IntegerField('Amount', validators = [DataRequired()])
+    submit = SubmitField('Bet')
+    
+    def validate_amount(self, amount):
+        print(amount)
+        print(current_user.funds)
+        if amount.data <= 0 or amount.data > current_user.funds:
+            raise ValidationError('Invalid bet amount.')

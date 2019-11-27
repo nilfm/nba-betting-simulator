@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block app_content %}
 <body>
-    <h1>Today's games</h1>
+    <h1>Today's games</h1><hr>
     {% for game in games %}
-    <div><p>{{ game.away_team }} ({{ game.odds[1] }}) @ {{ game.home_team }} ({{ game.odds[0] }})</p></div>
+        {% include "game.html" %}
     {% endfor %}
 </body>
 {% endblock %}

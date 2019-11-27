@@ -1,0 +1,36 @@
+<div>
+    <table class="table table-hover">
+        <tr>
+            <td width=700px>
+                HOME: <b>{{ game.home_team }} <b>
+            </td>
+            <td>
+                {{ game.odds[0] }}
+            </td>
+            <td>
+                <form action="" method="post">
+                    {{ form.amount }} {{ form.submit() }}
+                    {% for error in form.amount.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td width=700px>
+                AWAY: <b>{{ game.away_team }} <b>
+            </td>
+            <td>
+                {{ game.odds[1] }}
+            </td>
+            <td>
+                <form action="" method="post">
+                    {{ form.amount }} {{ form.submit() }}
+                    {% for error in form.amount.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
