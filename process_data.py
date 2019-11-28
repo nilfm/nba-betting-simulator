@@ -10,43 +10,16 @@ from sqlalchemy.exc import IntegrityError
 
 TODAY = datetime.now().strftime('%Y-%m-%d')
 IN_FILE_PATH = f"raw_{TODAY}.txt"
+TEAMS_FILE_PATH = "teams.json"
 OUT_FILE_PATH = f"data_{TODAY}.txt"
 IN_DIR = "raw"
 OUT_DIR = "data"
 
 def shorten_team(name):
-    shortened = {
-        'Atlanta Hawks' : 'ATL',
-        'Boston Celtics' : 'BOS',
-        'Brooklyn Nets' : 'BKN',
-        'Charlotte Hornets' : 'CHA',
-        'Chicago Bulls' : 'CHI',
-        'Cleveland Cavaliers' : 'CLE',
-        'Dallas Mavericks' : 'DAL',
-        'Denver Nuggets' : 'DEN',
-        'Detroit Pistons' : 'DET',
-        'Golden State Warriors' : 'GSW',
-        'Houston Rockets' : 'HOU',
-        'Indiana Pacers' : 'IND',
-        'Los Angeles Clippers' : 'LAC',
-        'Los Angeles Lakers' : 'LAL',
-        'Memphis Grizzlies' : 'MEM',
-        'Miami Heat' : 'MIA',
-        'Milwaukee Bucks' : 'MIL',
-        'Minnesota Timberwolves' : 'MIN',
-        'New Orleans Pelicans' : 'NOP',
-        'New York Knicks' : 'NYK',
-        'Oklahoma City Thunder' : 'OKC',
-        'Orlando Magic' : 'ORL',
-        'Philadelphia 76ers' : 'PHI',
-        'Phoenix Suns' : 'PHO',
-        'Portland Trail Blazers' : 'POR',
-        'Sacramento Kings' : 'SAC',
-        'San Antonio Spurs' : 'SAS',
-        'Toronto Raptors' : 'TOR',
-        'Utah Jazz' : 'UTA',
-        'Washington Wizards': 'WAS'
-    }
+    with open(TEAMS_FILE_PATH, 'r') as infile:
+        teams = json.load(infile)
+        
+    shortened = {t['team_name'] : t['short_name'] for t in teams}
     return shortened[name]
 
 def process_time(time):
@@ -80,7 +53,6 @@ def write_to_file(data):
 
 def write_to_db(data):
     all_games = Game.query.all()
-    print(all_games)
     for game in data:
         g = Game(home_team=shorten_team(game['home_team']),
                  away_team=shorten_team(game['away_team']))
