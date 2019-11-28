@@ -20,6 +20,20 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def change_balance(self, amount):
+        if (self.funds + amount < 0):
+            raise ValueError('Insufficient funds!')
+        self.funds += amount
+        self.save_db()
+    
+    def reset_funds(self, amount=1000):
+        self.funds = amount
+        self.save_db()
+    
+    def save_db(self):
+        db.session.add(self)
+        db.session.commit()
+        
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))
@@ -36,6 +50,8 @@ class Game(db.Model):
     home_team = db.Column(db.String(3), db.ForeignKey('team.short_name'))
     away_team = db.Column(db.String(3), db.ForeignKey('team.short_name'))
     date = db.Column(db.String(20), index=True, default=datetime.utcnow().strftime('%Y-%m-%d'))
+    
+    db.UniqueConstraint(home_team, away_team, date)
     
     def __repr__(self):
         return f"<{self.away_team} @ {self.home_team}>"
@@ -57,7 +73,7 @@ class Bet(db.Model):
     amount = db.Column(db.Integer)
     bet_on_home = db.Column(db.Boolean)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    
+        
     def __repr__(self):
         bet_for = "for the home team" if self.bet_on_home else "for the away team"
         return f"<{user_id} bet {self.amount} on {self.game_id} {bet_for}>"

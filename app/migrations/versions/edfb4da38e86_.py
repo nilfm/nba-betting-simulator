@@ -1,8 +1,8 @@
-"""Added FinishedGame and FinishedBet
+"""empty message
 
-Revision ID: 057830cb3e65
+Revision ID: edfb4da38e86
 Revises: 
-Create Date: 2019-11-27 00:08:00.724463
+Create Date: 2019-11-28 00:46:37.227103
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '057830cb3e65'
+revision = 'edfb4da38e86'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -42,7 +42,8 @@ def upgrade():
     sa.Column('date', sa.String(length=20), nullable=True),
     sa.ForeignKeyConstraint(['away_team'], ['team.short_name'], ),
     sa.ForeignKeyConstraint(['home_team'], ['team.short_name'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('home_team', 'away_team', 'date')
     )
     op.create_index(op.f('ix_game_date'), 'game', ['date'], unique=False)
     op.create_table('bet',

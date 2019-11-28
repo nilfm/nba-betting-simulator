@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Integ
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, NumberRange
 from app.models import User
 from flask_login import current_user
+from wtforms.widgets import html5
 
 
 class LoginForm(FlaskForm):
@@ -31,11 +32,10 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Please use a different email.')
 
 class BetForm(FlaskForm):
-    amount = IntegerField('Amount', validators = [DataRequired()])
+    amount = IntegerField('Amount', widget=html5.NumberInput())
     submit = SubmitField('Bet')
     
     def validate_amount(self, amount):
-        print(amount)
-        print(current_user.funds)
         if amount.data <= 0 or amount.data > current_user.funds:
             raise ValidationError('Invalid bet amount.')
+    

@@ -19,11 +19,16 @@ def index():
         return redirect(url_for('login'))
     with open(IN_FILE_PATH, 'r') as infile:
         games = json.load(infile)
-    form = BetForm()
-    if form.validate_on_submit():
-        flash(form.amount.data)
-        return redirect(url_for('index'))
-    return render_template('index.html', games=games, form=form)
+    forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
+    games_forms = list(zip(games, forms[::2], forms[1::2]))
+    for game, form1, form2 in games_forms:
+        for i, form in enumerate([form1, form2]):
+            if form.submit.data and form.validate_on_submit():
+                current_user.change_balance(-form.amount.data)
+                flash(f"You have successfully bet {form.amount.data} coin(s) on {game['teams'][1-i]}. You now have {current_user.funds} coin(s).")
+                return redirect(url_for('index'))
+
+    return render_template('index.html', games_forms=games_forms, date=TODAY)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -70,3 +75,13 @@ def user(username):
         {'home_team' : 'POR', 'away_team' : 'GSW', 'amount' : 50, 'bet_on_home' : False}
     ]
     return render_template("user.html", user=user, bets=bets)
+
+@app.route('/proves', methods=['GET', 'POST'])
+@login_required
+def proves():
+    forms = [BetForm(prefix=str(i)) for i in range(3)]
+    for form in forms:
+        if form.validate_on_submit():
+            flash(f"You have successfully bet {form.amount.data}")
+            return redirect(url_for('proves'))
+    return render_template('prova.html', forms=forms)

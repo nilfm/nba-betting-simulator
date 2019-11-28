@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<body>
+    <h1>Prova</h1><hr>
+    {% for form in forms %}
+    <form action="" method="post">
+        {{ form.amount }} 
+        {{ form.csrf_token }}
+        {{ form.submit() }}
+    </form>
+    {% endfor %}
+</body>
+{% endblock %}

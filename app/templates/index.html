@@ -2,8 +2,8 @@
 
 {% block app_content %}
 <body>
-    <h1>Today's games</h1><hr>
-    {% for game in games %}
+    <h1>Today's games - {{ date }}</h1><hr>
+    {% for game, form1, form2 in games_forms %}
         {% include "game.html" %}
     {% endfor %}
 </body>

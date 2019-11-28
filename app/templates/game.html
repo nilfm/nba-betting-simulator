@@ -1,34 +1,32 @@
 <div>
     <table class="table table-hover">
         <tr>
-            <td width=700px>
+            <td width=250px>
                 HOME: <b>{{ game.home_team }} <b>
             </td>
             <td>
                 {{ game.odds[0] }}
             </td>
-            <td>
+            <td class="text-right">
                 <form action="" method="post">
-                    {{ form.amount }} {{ form.submit() }}
-                    {% for error in form.amount.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
+                    {{ form1.amount }} 
+                    {{ form1.csrf_token }}
+                    {{ form1.submit() }}
                 </form>
             </td>
         </tr>
         <tr>
-            <td width=700px>
+            <td width="250px">
                 AWAY: <b>{{ game.away_team }} <b>
             </td>
             <td>
                 {{ game.odds[1] }}
             </td>
-            <td>
+            <td class="text-right">
                 <form action="" method="post">
-                    {{ form.amount }} {{ form.submit() }}
-                    {% for error in form.amount.errors %}
-                    <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
+                    {{ form2.amount }} 
+                    {{ form2.csrf_token }}
+                    {{ form2.submit() }}
                 </form>
             </td>
         </tr>
