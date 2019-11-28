@@ -23,12 +23,12 @@ def shorten_team(name):
     return shortened[name]
 
 def process_time(time):
-    return datetime.fromtimestamp(time).strftime('%Y-%m-%d')
+    return datetime.fromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
 
 def process(game):
     site = sorted(game["sites"], key=lambda site: site['site_key'])[0]
     good_game = {
-        'date_time' : process_time(site['last_update']),
+        'date_time' : process_time(game['commence_time']),
         'odds' : site["odds"]["h2h"][::-1], # odds[0] referred to teams[1] and viceversa if I didn't do this
         'site' : site["site_key"],
         'home_team' : game["teams"][1],
@@ -55,7 +55,8 @@ def write_to_db(data):
     all_games = Game.query.all()
     for game in data:
         g = Game(home_team=shorten_team(game['home_team']),
-                 away_team=shorten_team(game['away_team']))
+                 away_team=shorten_team(game['away_team']),
+                 date=game['date_time'])
         try:
             db.session.add(g)
             db.session.commit()
