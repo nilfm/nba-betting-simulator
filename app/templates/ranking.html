@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Ranking</h1>
+    <hr>
+    <ul class="list-group">
+    {% for i, username, funds in ranking %}
+        {% include "user_rank.html" %}
+    {% endfor %}
+    </ul>
+{% endblock %}

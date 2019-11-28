@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, BetForm
-from app.models import User, Game
+from app.models import User, Game, Bet
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -74,11 +74,8 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    bets = [
-        {'home_team' : 'TOR', 'away_team' : 'DAL', 'amount' : 100, 'bet_on_home' : True},
-        {'home_team' : 'POR', 'away_team' : 'GSW', 'amount' : 50, 'bet_on_home' : False}
-    ]
-    return render_template("user.html", user=user, bets=bets)
+    bets = Bet.query.filter_by(user_id=user.id).all()
+    return render_template("user.html", title=f"{username}'s profile",user=user, bets=bets)
 
 @app.route('/proves', methods=['GET', 'POST'])
 @login_required
@@ -89,3 +86,9 @@ def proves():
             flash(f"You have successfully bet {form.amount.data}")
             return redirect(url_for('proves'))
     return render_template('prova.html', forms=forms)
+
+@app.route('/ranking')
+def ranking():
+    users = User.query.order_by(User.funds.desc())
+    ranks = [(i, u.username, u.funds) for i, u in enumerate(users, start=1)]
+    return render_template('ranking.html', title='Ranking', ranking=ranks)

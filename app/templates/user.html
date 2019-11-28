@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>User: {{ user.username }}</h1>
+    <h1>{{ user.username }}'s bets</h1>
     <hr>
+    {% if bets %}
     {% for bet in bets %}
-    <p>
-    {{ bet.away_team }} @ {{ bet.home_team }} - Bet {{ bet.amount }} on {{ bet.home_team if bet.bet_on_home else bet.away_team }}
-    </p>
+        {% include "bet.html" %}
     {% endfor %}
+    {% else %}
+    <p>This user has made no bets yet!</p>
+    {% endif %}
 {% endblock %}
