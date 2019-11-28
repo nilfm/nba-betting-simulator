@@ -2,10 +2,10 @@
     <table class="table table-hover">
         <tr>
             <td width=250px>
-                HOME: <b>{{ game.home_team }} <b>
+                HOME: <b>{{ game.home_team_long.long_name }} <b>
             </td>
             <td>
-                {{ game.odds[0] }}
+                {{ game.home_odds }}
             </td>
             <td class="text-right">
                 <form action="" method="post">
@@ -17,10 +17,10 @@
         </tr>
         <tr>
             <td width="250px">
-                AWAY: <b>{{ game.away_team }} <b>
+                AWAY: <b>{{ game.away_team_long.long_name }} <b>
             </td>
             <td>
-                {{ game.odds[1] }}
+                {{ game.away_odds }}
             </td>
             <td class="text-right">
                 <form action="" method="post">

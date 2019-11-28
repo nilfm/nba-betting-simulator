@@ -10,6 +10,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 TODAY = datetime.now().strftime('%Y-%m-%d')
+TODAY = '2019-11-29'
 IN_FILE_PATH = f"../data/data_{TODAY}.txt"
 
 @app.route('/', methods=['GET', 'POST'])
@@ -17,15 +18,18 @@ IN_FILE_PATH = f"../data/data_{TODAY}.txt"
 def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    with open(IN_FILE_PATH, 'r') as infile:
-        games = json.load(infile)
+    games = Game.query.filter_by(date=TODAY).all()
     forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
     games_forms = list(zip(games, forms[::2], forms[1::2]))
     for game, form1, form2 in games_forms:
         for i, form in enumerate([form1, form2]):
             if form.submit.data and form.validate_on_submit():
-                current_user.change_balance(-form.amount.data)
-                flash(f"You have successfully bet {form.amount.data} coin(s) on {game['teams'][1-i]}. You now have {current_user.funds} coin(s).")
+                bet_on_home = (i == 0)
+                correct_bet = current_user.place_bet(game, form.amount.data, bet_on_home)
+                if (correct_bet):
+                    flash(f"You have successfully bet {form.amount.data} coin(s) on {game.home_team if bet_on_home else game.away_team}. You now have {current_user.funds} coin(s).")
+                else:
+                    flash("You already bet on this team for this game.")
                 return redirect(url_for('index'))
 
     return render_template('index.html', games_forms=games_forms, date=TODAY)

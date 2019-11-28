@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: d77d81e50372
+Revision ID: a71f95a4ec39
 Revises: 
-Create Date: 2019-11-28 15:30:07.813506
+Create Date: 2019-11-28 20:45:21.971453
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd77d81e50372'
+revision = 'a71f95a4ec39'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -39,13 +39,17 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('home_team', sa.String(length=3), nullable=True),
     sa.Column('away_team', sa.String(length=3), nullable=True),
+    sa.Column('home_odds', sa.Float(), nullable=True),
+    sa.Column('away_odds', sa.Float(), nullable=True),
     sa.Column('date', sa.String(length=20), nullable=True),
+    sa.Column('date_time', sa.String(length=40), nullable=True),
     sa.ForeignKeyConstraint(['away_team'], ['team.short_name'], ),
     sa.ForeignKeyConstraint(['home_team'], ['team.short_name'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('home_team', 'away_team', 'date')
     )
     op.create_index(op.f('ix_game_date'), 'game', ['date'], unique=False)
+    op.create_index(op.f('ix_game_date_time'), 'game', ['date_time'], unique=False)
     op.create_table('bet',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -55,7 +59,8 @@ def upgrade():
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['game_id'], ['game.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('user_id', 'game_id', 'bet_on_home')
     )
     op.create_index(op.f('ix_bet_game_id'), 'bet', ['game_id'], unique=False)
     op.create_index(op.f('ix_bet_timestamp'), 'bet', ['timestamp'], unique=False)
@@ -86,6 +91,7 @@ def downgrade():
     op.drop_index(op.f('ix_bet_timestamp'), table_name='bet')
     op.drop_index(op.f('ix_bet_game_id'), table_name='bet')
     op.drop_table('bet')
+    op.drop_index(op.f('ix_game_date_time'), table_name='game')
     op.drop_index(op.f('ix_game_date'), table_name='game')
     op.drop_table('game')
     op.drop_index(op.f('ix_user_username'), table_name='user')
