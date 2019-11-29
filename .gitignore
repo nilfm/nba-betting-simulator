@@ -1,4 +1,5 @@
 raw
 data
 app.db
+__pycache__
 .env
