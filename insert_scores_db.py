@@ -9,7 +9,6 @@ from sqlalchemy.exc import IntegrityError
 
 YESTERDAY_URL = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
 YESTERDAY = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-URL = f'https://www.cbssports.com/nba/scoreboard/{YESTERDAY_URL}/'
 SCORES_DIR = 'scores'
 SCORES_FILE_PATH = f'scores_{YESTERDAY}.txt'
 TEAMS_FILE_PATH = 'teams.json'
@@ -20,43 +19,6 @@ def shorten_team(name):
         
     shortened = {t['simple_name'] : t['short_name'] for t in teams}
     return shortened[name]
-
-def get_scores():
-    games = []
-
-    page = requests.get(URL)
-    soup = BeautifulSoup(page.text, 'html.parser')
-    tables=soup.findAll("div", {"class": "in-progress-table section"})
-
-    for table in tables:
-        game = {'scores': [], 'teams': []}
-        rows = table.findAll('tr')
-        for tr in rows:
-            cols = tr.findAll('td')
-            if cols:
-                game['scores'].append(cols[-1].find(text=True))
-            names = tr.findAll('a')
-            for name in names:
-                if name.string != None:
-                    game['teams'].append(name.string)
-        # Games that haven't started have scores like '\n (stuff)'
-        if (game and not game['scores'][0].startswith('\n')):
-            games.append(game)
-
-    good_games = [
-        {
-            'away_team' : shorten_team(game['teams'][0]),
-            'away_score' : game['scores'][0],
-            'home_team' : shorten_team(game['teams'][1]),
-            'home_score' : game['scores'][1]
-        }
-        for game in games
-    ]
-    return good_games
-
-def write_scores_to_file(scores):
-    with open(os.path.join(SCORES_DIR, SCORES_FILE_PATH), 'w') as outfile:
-        json.dump(scores, outfile, indent=4)
 
 def finish_game(game, score):
     try:
@@ -86,8 +48,9 @@ def write_to_db(scores):
             finish_bets(game, score)
 
 def main():
-    scores = get_scores()
-    write_scores_to_file(scores)
+    with open(os.path.join(SCORES_DIR, SCORES_FILE_PATH), 'r') as infile:
+        scores = json.load(infile)
+    print(scores)
     write_to_db(scores)
 
 if __name__ == '__main__':
