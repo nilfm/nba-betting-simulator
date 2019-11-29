@@ -39,7 +39,8 @@ def get_scores():
             for name in names:
                 if name.string != None:
                     game['teams'].append(name.string)
-        if (game):
+        # Games that haven't started have scores like '\n (stuff)'
+        if (game and not game['scores'][0].startswith('\n')):
             games.append(game)
 
     good_games = [
@@ -78,7 +79,7 @@ def finish_bets(game, score):
             
 def write_to_db(scores):
     for score in scores:
-        games = Game.query.filter_by(date=TODAY, away_team=score['home_team'], home_team=score['away_team']).all()
+        games = Game.query.filter_by(date=YESTERDAY, home_team=score['home_team'], away_team=score['away_team']).all()
         if len(games) == 1:
             game = games[0]
             finish_game(game, score)

@@ -1,0 +1,8 @@
+[
+    {
+        "away_team": "BOS",
+        "away_score": "107",
+        "home_team": "BKN",
+        "home_score": "112"
+    }
+]

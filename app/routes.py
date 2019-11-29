@@ -18,9 +18,6 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     games = Game.query.filter_by(date=TODAY).all()
-    for game in games:
-        print(game, game.date_time)
-    print(datetime.now()-timedelta(hours=8))
     # Filter out games that have already started
     games = [game for game in games if datetime.strptime(game.date_time, '%Y-%m-%d %H:%M:%S') > datetime.now() - timedelta(hours=8)]
     forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
