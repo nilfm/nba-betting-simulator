@@ -48,6 +48,11 @@ class User(UserMixin, db.Model):
         self.funds += int(amount)
         db.session.commit()
     
+    def reset_account(self):
+        self.reset_funds()
+        Bet.query.filter_by(user_id = self.id).delete()
+        db.session.commit()
+    
     def reset_funds(self, amount=1000):
         self.funds = int(amount)
         db.session.commit()

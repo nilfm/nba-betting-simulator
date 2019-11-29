@@ -25,6 +25,8 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
+        if len(username) > 30:
+            raise ValidationError('Username is too long')
         
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
@@ -36,6 +38,6 @@ class BetForm(FlaskForm):
     submit = SubmitField('Bet')
     
     def validate_amount(self, amount):
-        if amount.data <= 0 or amount.data > current_user.funds:
+        if amount.data is None or amount.data <= 0 or amount.data > current_user.funds:
             raise ValidationError('Invalid bet amount.')
     

@@ -30,8 +30,7 @@
                     <li><a href="{{ url_for('login') }}">Login</a></li>
                     <li><a href="{{ url_for('register') }}">Register</a></li>
                     {% else %}
-                    <li><a>{{ current_user.username }} - {{ current_user.funds }} coins</a></li>
-                    <li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
+                    <li><a href="{{ url_for('user', username=current_user.username) }}">{{ current_user.username }} - {{ current_user.funds }} coins</a></li>
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
                     {% endif %}
                 </ul>

@@ -1,34 +1,37 @@
 <div>
-    <table class="table table-hover">
-        <tr>
-            <td width=250px>
-                HOME: <b>{{ game.home_team_long.long_name }} <b>
-            </td>
-            <td>
+    <form class="form" action="" method="post">
+        <div class="form-row">
+            <div class="form-group col-xs-3">
+                <b>{{ game.home_team_long.long_name }}</b>
+            </div>
+            <div class="form-group col-xs-5">
                 {{ game.home_odds }}
-            </td>
-            <td class="text-right">
-                <form action="" method="post">
-                    {{ form1.amount }} 
-                    {{ form1.csrf_token }}
-                    {{ form1.submit() }}
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td width="250px">
-                AWAY: <b>{{ game.away_team_long.long_name }} <b>
-            </td>
-            <td>
+            </div>
+            <div class="form-group col-lg-3">
+                {{ form1.amount(class="form-control") }}
+                {{ form1.csrf_token }}
+            </div>
+            <div class="form-group col-lg-1">
+                {{ form1.submit(class="btn btn-light") }}
+            </div>
+        </div>
+    </form>
+    <form class="form" action="" method="post">
+        <div class="form-row">
+            <div class="form-group col-xs-3">
+                <b>{{ game.away_team_long.long_name }}</b>
+            </div>
+            <div class="form-group col-xs-5">
                 {{ game.away_odds }}
-            </td>
-            <td class="text-right">
-                <form action="" method="post">
-                    {{ form2.amount }} 
-                    {{ form2.csrf_token }}
-                    {{ form2.submit() }}
-                </form>
-            </td>
-        </tr>
-    </table>
+            </div>
+            <div class="form-group col-lg-3">
+                {{ form2.amount(class="form-control") }}
+                {{ form2.csrf_token }}
+            </div>
+            <div class="form-group col-lg-1">
+                {{ form2.submit(class="btn btn-light") }}
+            </div>
+        </div>
+    </form>
 </div>
+<hr class="col-xs-12">

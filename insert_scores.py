@@ -1,17 +1,17 @@
 import requests
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from app import db
 from app.models import *
 from sqlalchemy.exc import IntegrityError
 
-TODAY_URL = datetime.now().strftime('%Y%m%d')
-TODAY = datetime.now().strftime('%Y-%m-%d') # maybe I actually need YESTERDAY
-URL = f'https://www.cbssports.com/nba/scoreboard/{TODAY_URL}/'
+YESTERDAY_URL = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+YESTERDAY = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d') # maybe I actually need YESTERDAY
+URL = f'https://www.cbssports.com/nba/scoreboard/{YESTERDAY_URL}/'
 SCORES_DIR = 'scores'
-SCORES_FILE_PATH = f'scores_{TODAY}.txt'
+SCORES_FILE_PATH = f'scores_{YESTERDAY}.txt'
 TEAMS_FILE_PATH = 'teams.json'
 
 def shorten_team(name):

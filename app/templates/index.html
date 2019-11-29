@@ -2,9 +2,11 @@
 
 {% block app_content %}
 <body>
-    <h1>Today's games - {{ date }}</h1><hr>
+    <h1>Today's games</h1><hr><h2>{{ date }}</h2><hr>
+    <div class="container-fluid">
     {% for game, form1, form2 in games_forms %}
         {% include "game.html" %}
     {% endfor %}
+    </div>
 </body>
 {% endblock %}

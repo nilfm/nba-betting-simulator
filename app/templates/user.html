@@ -4,10 +4,16 @@
     <h1>{{ user.username }}'s bets</h1>
     <hr>
     {% if bets %}
+    <ul class="list-group">
     {% for bet in bets %}
         {% include "bet.html" %}
     {% endfor %}
+    </ul>
     {% else %}
     <p>This user has made no bets yet!</p>
     {% endif %}
+    <hr class="col-xs-12">
+    <form action="/reset_account" method="post">
+        <button class="btn btn-danger">Reset Account</button>
+    </form>
 {% endblock %}

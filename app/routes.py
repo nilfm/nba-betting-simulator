@@ -92,3 +92,10 @@ def ranking():
     users = User.query.order_by(User.funds.desc())
     ranks = [(i, u.username, u.funds) for i, u in enumerate(users, start=1)]
     return render_template('ranking.html', title='Ranking', ranking=ranks)
+
+@app.route('/reset_account', methods=['POST'])
+@login_required
+def reset_account():
+    current_user.reset_account()
+    flash('Your account has been reset')
+    return redirect(url_for('index'))
