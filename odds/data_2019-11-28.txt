@@ -1,0 +1,119 @@
+[
+    {
+        "date_time": "2019-11-29 10:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 2.52,
+        "away_odds": 1.6,
+        "home_team": "Brooklyn Nets",
+        "away_team": "Boston Celtics"
+    },
+    {
+        "date_time": "2019-11-29 17:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.34,
+        "away_odds": 3.65,
+        "home_team": "Detroit Pistons",
+        "away_team": "Charlotte Hornets"
+    },
+    {
+        "date_time": "2019-11-29 17:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.65,
+        "away_odds": 2.4,
+        "home_team": "Toronto Raptors",
+        "away_team": "Orlando Magic"
+    },
+    {
+        "date_time": "2019-11-29 17:40:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.28,
+        "away_odds": 3.75,
+        "home_team": "Philadelphia 76ers",
+        "away_team": "New York Knicks"
+    },
+    {
+        "date_time": "2019-11-29 17:40:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.17,
+        "away_odds": 5.6,
+        "home_team": "Milwaukee Bucks",
+        "away_team": "Cleveland Cavaliers"
+    },
+    {
+        "date_time": "2019-11-29 18:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.18,
+        "away_odds": 5.4,
+        "home_team": "Indiana Pacers",
+        "away_team": "Atlanta Hawks"
+    },
+    {
+        "date_time": "2019-11-29 18:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.13,
+        "away_odds": 4.3,
+        "home_team": "Miami Heat",
+        "away_team": "Golden State Warriors"
+    },
+    {
+        "date_time": "2019-11-29 18:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.61,
+        "away_odds": 2.48,
+        "home_team": "Oklahoma City Thunder",
+        "away_team": "New Orleans Pelicans"
+    },
+    {
+        "date_time": "2019-11-29 18:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.38,
+        "away_odds": 3.4,
+        "home_team": "Utah Jazz",
+        "away_team": "Memphis Grizzlies"
+    },
+    {
+        "date_time": "2019-11-29 18:40:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 3.3,
+        "away_odds": 1.42,
+        "home_team": "San Antonio Spurs",
+        "away_team": "Los Angeles Clippers"
+    },
+    {
+        "date_time": "2019-11-29 19:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 2.06,
+        "away_odds": 1.85,
+        "home_team": "Phoenix Suns",
+        "away_team": "Dallas Mavericks"
+    },
+    {
+        "date_time": "2019-11-29 20:10:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 1.32,
+        "away_odds": 3.65,
+        "home_team": "Portland Trail Blazers",
+        "away_team": "Chicago Bulls"
+    },
+    {
+        "date_time": "2019-11-29 20:40:00",
+        "date": "2019-11-29",
+        "site": "betfair",
+        "home_odds": 6.2,
+        "away_odds": 1.15,
+        "home_team": "Washington Wizards",
+        "away_team": "Los Angeles Lakers"
+    }
+]

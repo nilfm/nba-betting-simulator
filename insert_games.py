@@ -13,7 +13,7 @@ ODDS_API_KEY = os.getenv('ODDS_API_KEY')
 ODDS_URL = f"https://api.the-odds-api.com/v3/odds/?apiKey={ODDS_API_KEY}&sport=basketball_nba&region=us&mkt=h2h"
 TODAY = datetime.now().strftime('%Y-%m-%d')
 RAW_DIR = "raw"
-DATA_DIR = "data"
+DATA_DIR = "odds"
 RAW_FILE_PATH = f"raw_{TODAY}.txt"
 DATA_FILE_PATH = f"data_{TODAY}.txt"
 TEAMS_FILE_PATH = "teams.json"

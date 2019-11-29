@@ -6,3 +6,4 @@ flask-sqlalchemy
 flask-migrate
 flask-login
 flask-bootstrap
+bs4

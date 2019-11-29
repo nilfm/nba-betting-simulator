@@ -1,3 +1,7 @@
 <p>
-    {{ bet.game.away_team }} @ {{ bet.game.home_team }} - Bet {{ bet.amount }} on {{ bet.game.home_team if bet.bet_on_home else bet.game.away_team }}
+    {% if bet.finished %}
+        {{ bet.game.away_team }} @ {{ bet.game.home_team }} - Bet {{ bet.amount }} on {{ bet.game.home_team if bet.bet_on_home else bet.game.away_team }}, balance: {{ bet.balance }}
+    {% else %}
+        {{ bet.game.away_team }} @ {{ bet.game.home_team }} - Bet {{ bet.amount }} on {{ bet.game.home_team if bet.bet_on_home else bet.game.away_team }}
+    {% endif %}
 </p>
