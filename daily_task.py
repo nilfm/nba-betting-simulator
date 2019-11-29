@@ -2,7 +2,8 @@ import insert_games
 import insert_scores
 
 def main():
-    print("HOLA")
+    with open('lolaso', 'w') as f:
+        f.write("LOL")
     #insert_scores.main()
     #insert_games.main()
 
