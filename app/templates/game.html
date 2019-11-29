@@ -1,37 +1,39 @@
 <div>
+    <p><b>{{ game.away_team }}</b> @ <b> {{ game.home_team }}</b></p>
+    <br class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
     <form class="form" action="" method="post">
         <div class="form-row">
-            <div class="form-group col-xs-3">
-                HOME: <b>{{ game.home_team_long.long_name }}</b>
+            <div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-9">
+                <b>{{ game.home_team_long.long_name }}</b>
             </div>
-            <div class="form-group col-xs-6">
-                {{ game.home_odds }}
+            <div class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <p>{{ game.home_odds }}</p>
             </div>
-            <div class="form-group col-lg-2">
+            <div class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-9">
                 {{ form1.amount(class="form-control", placeholder="Amount") }}
                 {{ form1.csrf_token }}
             </div>
-            <div class="form-group col-lg-1">
+            <div class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
                 {{ form1.submit(class="btn btn-light") }}
             </div>
         </div>
     </form>
     <form class="form" action="" method="post">
         <div class="form-row">
-            <div class="form-group col-xs-3">
-                AWAY: <b>{{ game.away_team_long.long_name }}</b>
+            <div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-9">
+                <b>{{ game.away_team_long.long_name }}</b>
             </div>
-            <div class="form-group col-xs-6">
-                {{ game.away_odds }}
+            <div class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <p>{{ game.away_odds }}</p>
             </div>
-            <div class="form-group col-lg-2">
+            <div class="form-group col-xl-3 col-lg- col-md-3 col-sm-3 col-xs-9">
                 {{ form2.amount(class="form-control", placeholder="Amount") }}
                 {{ form2.csrf_token }}
             </div>
-            <div class="form-group col-lg-1">
+            <div class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
                 {{ form2.submit(class="btn btn-light") }}
             </div>
         </div>
     </form>
 </div>
-<hr class="col-xs-12">
+<hr class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
