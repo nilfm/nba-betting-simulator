@@ -75,17 +75,17 @@ def register():
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     bets = Bet.query.filter_by(user_id=user.id).all()
-    return render_template("user.html", title=f"{username}'s profile",user=user, bets=bets)
+    pending_bets = [bet for bet in bets if not bet.finished]
+    finished_bets = [bet for bet in bets if bet.finished]
+    return render_template("user.html", title=f"{username}'s profile",user=user, pending_bets=pending_bets, finished_bets=finished_bets)
 
 @app.route('/proves', methods=['GET', 'POST'])
 @login_required
 def proves():
-    forms = [BetForm(prefix=str(i)) for i in range(3)]
-    for form in forms:
-        if form.validate_on_submit():
-            flash(f"You have successfully bet {form.amount.data}")
-            return redirect(url_for('proves'))
-    return render_template('prova.html', forms=forms)
+    games = Game.query.filter_by(date=TODAY).all()
+    forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
+    games_forms = list(zip(games, forms[::2], forms[1::2]))
+    return render_template('prova.html', games_forms=games_forms, date=TODAY)
 
 @app.route('/ranking')
 def ranking():

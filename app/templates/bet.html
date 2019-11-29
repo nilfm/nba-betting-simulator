@@ -1,7 +1,15 @@
-<li class="list-group-item">
-    {% if bet.finished %}
+{% if bet.finished %}
+    {% if bet.won %}
+        <li class="list-group-item won-bet">
         {{ bet.game.away_team }} @ {{ bet.game.home_team }} - Bet {{ bet.amount }} on {{ bet.game.home_team if bet.bet_on_home else bet.game.away_team }}, balance: {{ bet.balance }}
+        </li>
     {% else %}
-        {{ bet.game.away_team }} @ {{ bet.game.home_team }} - Bet {{ bet.amount }} on {{ bet.game.home_team if bet.bet_on_home else bet.game.away_team }}
+        <li class="list-group-item lost-bet">
+        {{ bet.game.away_team }} @ {{ bet.game.home_team }} - Bet {{ bet.amount }} on {{ bet.game.home_team if bet.bet_on_home else bet.game.away_team }}, balance: {{ bet.balance }}
+        </li>
     {% endif %}
-</li>
+{% else %}
+    <li class="list-group-item pending-bet">
+    {{ bet.game.away_team }} @ {{ bet.game.home_team }} - Bet {{ bet.amount }} on {{ bet.game.home_team if bet.bet_on_home else bet.game.away_team }}
+    </li>
+{% endif %}

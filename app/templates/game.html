@@ -2,13 +2,13 @@
     <form class="form" action="" method="post">
         <div class="form-row">
             <div class="form-group col-xs-3">
-                <b>{{ game.home_team_long.long_name }}</b>
+                HOME: <b>{{ game.home_team_long.long_name }}</b>
             </div>
-            <div class="form-group col-xs-5">
+            <div class="form-group col-xs-6">
                 {{ game.home_odds }}
             </div>
-            <div class="form-group col-lg-3">
-                {{ form1.amount(class="form-control") }}
+            <div class="form-group col-lg-2">
+                {{ form1.amount(class="form-control", placeholder="Amount") }}
                 {{ form1.csrf_token }}
             </div>
             <div class="form-group col-lg-1">
@@ -19,13 +19,13 @@
     <form class="form" action="" method="post">
         <div class="form-row">
             <div class="form-group col-xs-3">
-                <b>{{ game.away_team_long.long_name }}</b>
+                AWAY: <b>{{ game.away_team_long.long_name }}</b>
             </div>
-            <div class="form-group col-xs-5">
+            <div class="form-group col-xs-6">
                 {{ game.away_odds }}
             </div>
-            <div class="form-group col-lg-3">
-                {{ form2.amount(class="form-control") }}
+            <div class="form-group col-lg-2">
+                {{ form2.amount(class="form-control", placeholder="Amount") }}
                 {{ form2.csrf_token }}
             </div>
             <div class="form-group col-lg-1">

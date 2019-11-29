@@ -3,14 +3,26 @@
 {% block app_content %}
     <h1>{{ user.username }}'s bets</h1>
     <hr>
-    {% if bets %}
+    {% if pending_bets %}
+    <h3>Pending bets</h3>
     <ul class="list-group">
-    {% for bet in bets %}
+    {% for bet in pending_bets %}
         {% include "bet.html" %}
     {% endfor %}
     </ul>
     {% else %}
-    <p>This user has made no bets yet!</p>
+    <p>This user has no pending bets.</p>
+    {% endif %}
+    <hr>
+    <h3>Finished bets</h3>
+    {% if finished_bets %}
+    <ul class="list-group">
+    {% for bet in finished_bets %}
+        {% include "bet.html" %}
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p>This user has no finished bets.</p>
     {% endif %}
     <hr class="col-xs-12">
     <form action="/reset_account" method="post">
