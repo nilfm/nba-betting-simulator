@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, BetForm
 from app.models import User, Game, Bet
@@ -9,9 +9,8 @@ from flask import render_template, jsonify, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-TODAY = datetime.now().strftime('%Y-%m-%d')
-TODAY = '2019-11-29'
-IN_FILE_PATH = f"../data/data_{TODAY}.txt"
+TODAY = (datetime.now()-timedelta(hours=8)).strftime('%Y-%m-%d')
+sIN_FILE_PATH = f"../data/data_{TODAY}.txt"
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -19,6 +18,11 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     games = Game.query.filter_by(date=TODAY).all()
+    for game in games:
+        print(game, game.date_time)
+    print(datetime.now()-timedelta(hours=8))
+    # Filter out games that have already started
+    games = [game for game in games if datetime.strptime(game.date_time, '%Y-%m-%d %H:%M:%S') > datetime.now() - timedelta(hours=8)]
     forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
     games_forms = list(zip(games, forms[::2], forms[1::2]))
     for game, form1, form2 in games_forms:
