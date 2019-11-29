@@ -84,8 +84,10 @@ def write_to_db(scores):
             finish_game(game, score)
             finish_bets(game, score)
 
-
-if __name__ == '__main__':
+def main():
     scores = get_scores()
     write_scores_to_file(scores)
     write_to_db(scores)
+
+if __name__ == '__main__':
+    main()
