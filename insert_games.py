@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 import os
 from app import db
-from app.models import Game
+from app.models import Game, Bet
 from sqlalchemy.exc import IntegrityError
 import settings
 
@@ -82,8 +82,8 @@ def write_to_db(data):
             print(g)
         except IntegrityError:
             db.session.rollback()
-            game = db.query.filter_by(home_team=g.home_team, away_team=g.away_team, date=g.date).first()
-            game.update_odds(g['home_odds'] if game.bet_on_home else g['away_odds'])
+            game = Game.query.filter_by(home_team=g.home_team, away_team=g.away_team, date=g.date).first()
+            game.update_odds(g['home_odds'], g['away_odds'])
             db.session.commit()
             print('Updated ', game)
 

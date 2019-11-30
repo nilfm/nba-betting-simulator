@@ -105,6 +105,10 @@ class Game(db.Model):
         self.date_time = date_time        
         self.finished = False
 
+    def update_odds(self, home_odds, away_odds):
+        self.home_odds = home_odds
+        self.away_odds = away_odds
+
     def finish(self, home_score, away_score):
         if self.finished:
             return
@@ -143,9 +147,6 @@ class Bet(db.Model):
         self.odds = odds
         self.bet_on_home = bet_on_home
         self.finished = False
-        
-    def update_odds(self, odds):
-        self.odds = odds
 
     def finish(self, won):
         if self.finished:
