@@ -3,34 +3,46 @@
 {% block app_content %}
     <h1>{{ user.username }}'s bets</h1>
     <hr>
-    {% if pending_bets %}
     <h3>Pending bets</h3>
-    <ul class="list-group">
-    {% for bet in pending_bets %}
-        {% include "bet.html" %}
-    {% endfor %}
-    </ul>
+    {% if pending_bets %}
+    <br>
+    <div class="container-fluid">
+        <ul class="list-group">
+        {% for bet in pending_bets %}
+            {% include "bet.html" %}
+        {% endfor %}
+        </ul>
+    </div>
     {% else %}
     <p>This user has no pending bets.</p>
     {% endif %}
     <hr>
     <h3>Finished bets</h3>
     {% if finished_bets %}
-    <ul class="list-group">
-    {% for bet in finished_bets %}
-        {% include "bet.html" %}
-    {% endfor %}
-    </ul>
+    <br>
+    <div class="container-fluid">
+        <ul class="list-group">
+        {% for bet in finished_bets %}
+            {% include "bet.html" %}
+        {% endfor %}
+        </ul>
+    </div>
     {% else %}
     <p>This user has no finished bets.</p>
     {% endif %}
     <hr class="col-xs-12">
     {% if is_me %}
-    <form action="/reset_account" method="post">
-        <button class="btn btn-danger">Reset Account</button>
-    </form>
-    <form action="/delete_account" method="post">
-        <button class="btn btn-danger">Delete Account</button>
-    </form>
+    <div class="form-row">
+        <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <form action="/reset_account" method="post">
+                <button class="btn btn-danger">Reset Account</button>
+            </form>
+        </div>
+        <div align="right" class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <form action="/delete_account" method="post">
+                <button class="btn btn-danger">Delete Account</button>
+            </form>
+        </div>
+    </div>
     {% endif %}
 {% endblock %}
