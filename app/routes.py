@@ -80,7 +80,8 @@ def user(username):
     bets = Bet.query.filter_by(user_id=user.id).all()
     pending_bets = [bet for bet in bets if not bet.finished]
     finished_bets = [bet for bet in bets if bet.finished]
-    return render_template("user.html", title=f"{username}'s profile",user=user, pending_bets=pending_bets, finished_bets=finished_bets)
+    is_me = user.id == current_user.id
+    return render_template("user.html", title=f"{username}'s profile",is_me=is_me, user=user, pending_bets=pending_bets, finished_bets=finished_bets)
 
 @app.route('/proves', methods=['GET', 'POST'])
 @login_required
