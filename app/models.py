@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
             user_id=self.id,
             game_id=game.id,
             amount=amount,
-            odds=self.home_odds if bet_on_home else self.away_odds,
+            odds=game.home_odds if bet_on_home else game.away_odds,
             bet_on_home=bet_on_home
         )
         try:

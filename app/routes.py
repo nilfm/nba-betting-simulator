@@ -103,3 +103,13 @@ def reset_account():
     current_user.reset_account()
     flash('Your account has been reset')
     return redirect(url_for('index'))
+
+@app.route('/delete_account', methods=['POST'])
+@login_required
+def delete_account():
+    id = current_user.id
+    logout_user()
+    User.query.filter_by(id=id).delete()
+    Bet.query.filter_by(user_id=id).delete()
+    db.session.commit()
+    return redirect(url_for('login'))
