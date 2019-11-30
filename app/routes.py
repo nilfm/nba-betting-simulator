@@ -18,11 +18,13 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     games = Game.query.filter_by(date=TODAY).all()
+    already_bet_home = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=True).first() is not None for g in games]
+    already_bet_away = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=False).first() is not None for g in games]
     # Filter out games that have already started
     games = [game for game in games if datetime.strptime(game.date_time, '%Y-%m-%d %H:%M:%S') > datetime.now() - timedelta(hours=8)]
     forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
-    games_forms = list(zip(games, forms[::2], forms[1::2]))
-    for game, form1, form2 in games_forms:
+    games_forms = list(zip(games, forms[::2], forms[1::2], already_bet_home, already_bet_away))
+    for game, form1, form2, _, _ in games_forms:
         for i, form in enumerate([form1, form2]):
             if form.submit.data and form.validate_on_submit():
                 bet_on_home = (i == 0)

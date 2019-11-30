@@ -15,9 +15,15 @@
                 {{ form1.amount(class="form-control", placeholder="Amount") }}
                 {{ form1.csrf_token }}
             </div>
+            {% if already1 %}
             <div class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
-                {{ form1.submit(class="btn btn-light") }}
+                <button class="btn btn-primary" disabled>Bet</button>
             </div>
+            {% else %}
+            <div class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                {{ form1.submit(class="btn btn-primary") }}
+            </div>
+            {% endif %}
         </div>
     </form>
     <form class="form" action="" method="post">
@@ -32,9 +38,15 @@
                 {{ form2.amount(class="form-control", placeholder="Amount") }}
                 {{ form2.csrf_token }}
             </div>
+            {% if already2 %}
             <div class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
-                {{ form2.submit(class="btn btn-light") }}
+                <button class="btn btn-primary" disabled>Bet</button>
             </div>
+            {% else %}
+            <div class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                {{ form2.submit(class="btn btn-primary") }}
+            </div>
+            {% endif %}
         </div>
     </form>
 </div>

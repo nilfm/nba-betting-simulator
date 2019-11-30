@@ -2,4 +2,5 @@ raw
 data
 app.db
 __pycache__
+app/__pycache__
 .env
