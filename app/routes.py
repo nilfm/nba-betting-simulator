@@ -10,7 +10,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 TODAY = (datetime.now()-timedelta(hours=8)).strftime('%Y-%m-%d')
-sIN_FILE_PATH = f"../data/data_{TODAY}.txt"
+IN_FILE_PATH = f"../odds/data_{TODAY}.txt"
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
