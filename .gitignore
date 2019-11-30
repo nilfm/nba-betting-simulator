@@ -6,3 +6,4 @@ __pycache__
 app/__pycache__
 .env
 my_env
+*.pyc
