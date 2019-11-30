@@ -10,12 +10,14 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     funds = db.Column(db.Integer)
+    ranking_funds = db.Column(db.Integer)
     date_reg = db.Column(db.DateTime, default=datetime.utcnow)
     
     def __init__(self, username, email, funds=1000):
         self.username = username
         self.email = email
         self.funds = funds
+        self.ranking_funds = funds
     
     def __repr__(self):
         return f"<User {self.username} - {self.funds} coins>"
@@ -31,6 +33,7 @@ class User(UserMixin, db.Model):
             user_id=self.id,
             game_id=game.id,
             amount=amount,
+            odds=self.home_odds if bet_on_home else self.away_odds,
             bet_on_home=bet_on_home
         )
         try:
@@ -46,6 +49,10 @@ class User(UserMixin, db.Model):
         if (self.funds + amount < 0):
             raise ValueError('Insufficient funds!')
         self.funds += int(amount)
+        db.session.commit()
+    
+    def change_ranking_balance(self, amount):
+        self.ranking_funds += int(amount)
         db.session.commit()
     
     def reset_account(self):
@@ -106,7 +113,7 @@ class Game(db.Model):
         self.away_score = away_score
         self.winner = 1 if home_score > away_score else 2
         print(self)
-        
+    
     def __repr__(self):
         if self.winner is None:
             return f"<{self.away_team} @ {self.home_team} on {self.date}>"
@@ -120,6 +127,7 @@ class Bet(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), index=True)
     game = db.relationship('Game', foreign_keys=[game_id])
     amount = db.Column(db.Integer)
+    odds = db.Column(db.Float)
     bet_on_home = db.Column(db.Boolean)
     timestamp = db.Column(db.DateTime, index=True)
     won = db.Column(db.Boolean)
@@ -128,12 +136,16 @@ class Bet(db.Model):
 
     db.UniqueConstraint(user_id, game_id, bet_on_home)
     
-    def __init__(self, user_id, game_id, amount, bet_on_home):
+    def __init__(self, user_id, game_id, amount, odds, bet_on_home):
         self.user_id = user_id
         self.game_id = game_id
         self.amount = amount
+        self.odds = odds
         self.bet_on_home = bet_on_home
         self.finished = False
+        
+    def update_odds(self, odds):
+        self.odds = odds
 
     def finish(self, won):
         if self.finished:
@@ -141,13 +153,12 @@ class Bet(db.Model):
         self.finished = True
         self.won = won
         if won:
-            if self.bet_on_home:
-                self.balance = int(self.amount*(self.game.home_odds - 1))
-            else:
-                self.balance = int(self.amount*(self.game.away_odds - 1))
+            self.balance = int(self.amount*(self.odds-1))
             self.user.change_balance(self.balance + self.amount)
+            self.user.change_ranking_balance(self.balance)
         else:
             self.balance = -self.amount
+            self.user.change_ranking_balance(-self.amount)
         print(self)
     
     def __repr__(self):

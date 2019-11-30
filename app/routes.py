@@ -93,8 +93,8 @@ def proves():
 
 @app.route('/ranking')
 def ranking():
-    users = User.query.order_by(User.funds.desc())
-    ranks = [(i, u.username, u.funds) for i, u in enumerate(users, start=1)]
+    users = User.query.order_by(User.ranking_funds.desc())
+    ranks = [(i, u.username, u.ranking_funds) for i, u in enumerate(users, start=1)]
     return render_template('ranking.html', title='Ranking', ranking=ranks)
 
 @app.route('/reset_account', methods=['POST'])
