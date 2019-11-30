@@ -4,8 +4,8 @@
     <h1>{{ user.username }}'s bets</h1>
     <hr>
     <h3>Pending bets</h3>
-    {% if pending_bets %}
     <br>
+    {% if pending_bets %}
     <div class="container-fluid">
         <ul class="list-group">
         {% for bet in pending_bets %}
@@ -18,8 +18,8 @@
     {% endif %}
     <hr>
     <h3>Finished bets</h3>
-    {% if finished_bets %}
     <br>
+    {% if finished_bets %}
     <div class="container-fluid">
         <ul class="list-group">
         {% for bet in finished_bets %}
