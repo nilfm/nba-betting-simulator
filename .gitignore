@@ -1,5 +1,6 @@
 raw
-data
+odds
+scores
 app.db
 __pycache__
 app/__pycache__
