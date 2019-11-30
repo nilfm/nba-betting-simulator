@@ -4,5 +4,77 @@
         "away_score": "107",
         "home_team": "BKN",
         "home_score": "112"
+    },
+    {
+        "away_team": "TOR",
+        "away_score": "90",
+        "home_team": "ORL",
+        "home_score": "83"
+    },
+    {
+        "away_team": "CHA",
+        "away_score": "110",
+        "home_team": "DET",
+        "home_score": "107"
+    },
+    {
+        "away_team": "PHI",
+        "away_score": "101",
+        "home_team": "NYK",
+        "home_score": "95"
+    },
+    {
+        "away_team": "MIL",
+        "away_score": "119",
+        "home_team": "CLE",
+        "home_score": "110"
+    },
+    {
+        "away_team": "NOP",
+        "away_score": "104",
+        "home_team": "OKC",
+        "home_score": "109"
+    },
+    {
+        "away_team": "UTA",
+        "away_score": "103",
+        "home_team": "MEM",
+        "home_score": "94"
+    },
+    {
+        "away_team": "GSW",
+        "away_score": "105",
+        "home_team": "MIA",
+        "home_score": "122"
+    },
+    {
+        "away_team": "ATL",
+        "away_score": "104",
+        "home_team": "IND",
+        "home_score": "105"
+    },
+    {
+        "away_team": "LAC",
+        "away_score": "97",
+        "home_team": "SAS",
+        "home_score": "107"
+    },
+    {
+        "away_team": "DAL",
+        "away_score": "120",
+        "home_team": "PHX",
+        "home_score": "113"
+    },
+    {
+        "away_team": "CHI",
+        "away_score": "103",
+        "home_team": "POR",
+        "home_score": "107"
+    },
+    {
+        "away_team": "WAS",
+        "away_score": "103",
+        "home_team": "LAL",
+        "home_score": "125"
     }
 ]

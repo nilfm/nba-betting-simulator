@@ -32,17 +32,21 @@ def get_scores():
         game = {'scores': [], 'teams': []}
         rows = table.findAll('tr')
         for tr in rows:
-            cols = tr.findAll('td')
-            if cols:
-                game['scores'].append(cols[-1].find(text=True))
             names = tr.findAll('a')
             for name in names:
                 if name.string != None:
                     game['teams'].append(name.string)
-        # Games that haven't started have scores like '\n (stuff)'
-        if (game and not game['scores'][0].startswith('\n')):
-            games.append(game)
+            cols = tr.findAll('td')
+            if cols:
+                # Check if game is over
+                ok = all(t.find(text=True).isdigit() for t in cols[1:5])
+                if not ok:
+                    continue
+                game['scores'].append(cols[-1].find(text=True))
 
+        # Games that haven't started have scores like '\n (stuff)'
+        if (game):
+            games.append(game)
     good_games = [
         {
             'away_team' : shorten_team(game['teams'][0]),
@@ -50,7 +54,7 @@ def get_scores():
             'home_team' : shorten_team(game['teams'][1]),
             'home_score' : game['scores'][1]
         }
-        for game in games
+        for game in games if len(game['scores']) == 2
     ]
     return good_games
 
@@ -60,7 +64,7 @@ def write_scores_to_file(scores):
 
 def finish_game(game, score):
     try:
-        game.finish(score['home_score'], score['away_score'])
+        game.finish(int(score['home_score']), int(score['away_score']))
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
@@ -68,7 +72,7 @@ def finish_game(game, score):
 def finish_bets(game, score):
     bets = Bet.query.filter_by(game_id = game.id).all()
     for bet in bets:
-        home_won = score['home_score'] > score['away_score']
+        home_won = int(score['home_score']) > int(score['away_score'])
         right = bet.bet_on_home == home_won
         try:
             bet.finish(right)
@@ -87,6 +91,7 @@ def write_to_db(scores):
 
 def main():
     scores = get_scores()
+    print(scores)
     write_scores_to_file(scores)
     write_to_db(scores)
 
