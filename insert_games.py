@@ -83,7 +83,7 @@ def write_to_db(data):
         except IntegrityError:
             db.session.rollback()
             game = Game.query.filter_by(home_team=g.home_team, away_team=g.away_team, date=g.date).first()
-            game.update_odds(g['home_odds'], g['away_odds'])
+            game.update_odds(g.home_odds, g.away_odds)
             db.session.commit()
             print('Updated ', game)
 

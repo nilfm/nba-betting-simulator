@@ -3,8 +3,8 @@
         "date_time": "2019-11-30 15:10:00",
         "date": "2019-11-30",
         "site": "betfair",
-        "home_odds": 2.68,
-        "away_odds": 1.56,
+        "home_odds": 2.72,
+        "away_odds": 1.57,
         "home_team": "Sacramento Kings",
         "away_team": "Denver Nuggets"
     },
@@ -12,8 +12,8 @@
         "date_time": "2019-11-30 17:10:00",
         "date": "2019-11-30",
         "site": "betfair",
-        "home_odds": 1.44,
-        "away_odds": 3.05,
+        "home_odds": 1.54,
+        "away_odds": 2.8,
         "home_team": "Philadelphia 76ers",
         "away_team": "Indiana Pacers"
     },
@@ -21,8 +21,8 @@
         "date_time": "2019-11-30 18:10:00",
         "date": "2019-11-30",
         "site": "betfair",
-        "home_odds": 1.09,
-        "away_odds": 9.4,
+        "home_odds": 1.11,
+        "away_odds": 9.2,
         "home_team": "Milwaukee Bucks",
         "away_team": "Charlotte Hornets"
     },
@@ -30,8 +30,8 @@
         "date_time": "2019-11-30 18:10:00",
         "date": "2019-11-30",
         "site": "betfair",
-        "home_odds": 1.11,
-        "away_odds": 8.4,
+        "home_odds": 1.09,
+        "away_odds": 11,
         "home_team": "Houston Rockets",
         "away_team": "Atlanta Hawks"
     }
