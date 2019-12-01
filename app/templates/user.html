@@ -8,10 +8,10 @@
     <div class="container-fluid">
         <ul class="list-group">
             <li class="list-group-item won-bet">
-                Won {{ stats.won }} bet{% if stats.won != 1 %}s{% endif %} ({{ "%.2f"|format(100*stats.won/(stats.won+stats.lost)) }}%)
+                Won {{ stats.won }} bet{% if stats.won != 1 %}s{% endif %} {% if stats.won+stats.lost != 0 %}({{ "%.2f"|format(100*stats.won/(stats.won+stats.lost)) }}%){% endif %}
             </li>
             <li class="list-group-item lost-bet">
-                Lost {{ stats.lost }} bet{% if stats.lost != 1 %}s{% endif %} ({{ "%.2f"|format(100*stats.lost/(stats.won+stats.lost)) }}%)
+                Lost {{ stats.lost }} bet{% if stats.lost != 1 %}s{% endif %} {% if stats.won+stats.lost != 0 %}({{ "%.2f"|format(100*stats.lost/(stats.won+stats.lost)) }}%){% endif %}
             </li>
         </ul>
     </div>
