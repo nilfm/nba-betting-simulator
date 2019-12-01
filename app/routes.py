@@ -78,6 +78,7 @@ def register():
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     bets = Bet.query.filter_by(user_id=user.id).all()
+    bets = sorted(bets, key=lambda b: datetime.strptime(b.game.date, '%Y-%m-%d'), reverse=True)
     pending_bets = [bet for bet in bets if not bet.finished]
     finished_bets = [bet for bet in bets if bet.finished]
     is_me = user.id == current_user.id
