@@ -20,8 +20,11 @@ def index():
     games = Game.query.filter_by(date=TODAY).all()
     already_bet_home = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=True).first() is not None for g in games]
     already_bet_away = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=False).first() is not None for g in games]
-    # Filter out games that have already started
-    games = [game for game in games if datetime.strptime(game.date_time, '%Y-%m-%d %H:%M:%S') > datetime.now() - timedelta(hours=8)]
+    # Filter out games that have already started, need to filter out already_bet_X too
+    not_started = [(game, b1, b2)for game, b1, b2 in zip(games, already_bet_home, already_bet_away) if datetime.strptime(game.date_time, '%Y-%m-%d %H:%M:%S') > datetime.now() - timedelta(hours=8)]
+    # zip(*x) is the inverse of zip
+    games, already_bet_home, already_bet_away = zip(*not_started)
+    
     forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
     games_forms = list(zip(games, forms[::2], forms[1::2], already_bet_home, already_bet_away))
     for game, form1, form2, _, _ in games_forms:
