@@ -4,6 +4,8 @@ Website to simulate NBA bets.
 
 Every day it posts the new games and checks the scores of the past day's games.
 
+The website is available <a href="http://nbabettingsimulator.com">here</a>.
+
 ### Ideas
 
 * Make the bets via AJAX request so it doesn't reload the page
