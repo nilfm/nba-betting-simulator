@@ -26,27 +26,27 @@ def get_scores():
 
     page = requests.get(URL)
     soup = BeautifulSoup(page.text, 'html.parser')
-    tables=soup.findAll("div", {"class": "in-progress-table section"})
+    all_games = soup.findAll("div", {"class": "live-update"})
+    for g in all_games:
+        # Find finished games
+        finished = g.findAll("div", {"class": "postgame"})
+        if finished:
+            # Get table of results
+            table = g.findAll("div", {"class": "in-progress-table section"})[0]
+            # Init dictionary
+            game = {'scores': [], 'teams': []}
+            rows = table.findAll('tr')
+            for tr in rows:
+                names = tr.findAll('a')
+                for name in names:
+                    if name.string != None:
+                        game['teams'].append(name.string)
+                cols = tr.findAll('td')
+                if cols:
+                    game['scores'].append(cols[-1].find(text=True))
 
-    for table in tables:
-        game = {'scores': [], 'teams': []}
-        rows = table.findAll('tr')
-        for tr in rows:
-            names = tr.findAll('a')
-            for name in names:
-                if name.string != None:
-                    game['teams'].append(name.string)
-            cols = tr.findAll('td')
-            if cols:
-                # Check if game is over
-                ok = all(t.find(text=True).isdigit() for t in cols[1:5])
-                if not ok:
-                    continue
-                game['scores'].append(cols[-1].find(text=True))
-
-        # Games that haven't started have scores like '\n (stuff)'
-        if (game):
             games.append(game)
+                
     good_games = [
         {
             'away_team' : shorten_team(game['teams'][0]),
@@ -84,6 +84,7 @@ def finish_bets(game, score):
 def write_to_db(scores):
     for score in scores:
         games = Game.query.filter_by(date=YESTERDAY, home_team=score['home_team'], away_team=score['away_team']).all()
+        print(games)
         if len(games) == 1:
             game = games[0]
             finish_game(game, score)
@@ -91,7 +92,6 @@ def write_to_db(scores):
 
 def main():
     scores = get_scores()
-    print(scores)
     write_scores_to_file(scores)
     write_to_db(scores)
 

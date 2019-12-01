@@ -47,10 +47,10 @@ def process(game):
         'date_time' : format_datetime(game['commence_time']),
         'date' : format_date(game['commence_time']),
         'site' : site["site_key"],
-        'home_odds' : site['odds']['h2h'][1],
-        'away_odds' : site['odds']['h2h'][0],
-        'home_team' : game["teams"][1],
-        'away_team' : game["teams"][0],
+        'home_team' : game["home_team"],
+        'away_team' : game["teams"][0] if game["home_team"] != game["teams"][0] else game["teams"][1],
+        'home_odds' : site['odds']['h2h'][1] if game["home_team"] == game["teams"][1] else site['odds']['h2h'][0],
+        'away_odds' : site['odds']['h2h'][1] if game["home_team"] == game["teams"][0] else site['odds']['h2h'][0],
     }    
     return good_game
 
