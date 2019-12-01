@@ -30,7 +30,7 @@ def index():
                 bet_on_home = (i == 0)
                 correct_bet = current_user.place_bet(game, form.amount.data, bet_on_home)
                 if (correct_bet):
-                    flash(f"You have successfully bet {form.amount.data} coin(s) on {game.home_team if bet_on_home else game.away_team}. You now have {current_user.funds} coin(s).")
+                    flash(f"You have successfully bet {form.amount.data} coin{'s' if form.amount.data != 1 else ''} on {game.home_team if bet_on_home else game.away_team}. You now have {current_user.funds} coin{'s' if current_user.funds != 1 else ''}.")
                 else:
                     flash("You already bet on this team for this game.")
                 return redirect(url_for('index'))
