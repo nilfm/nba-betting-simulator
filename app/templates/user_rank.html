@@ -1,4 +1,10 @@
+<style>
+    .rank_link {
+        color: rgba(0, 0, 0, 0.7) !important;    
+    }
+</style>
+
 <li class="list-group-item d-flex justify-content-between align-items-center">
-    {{ i }}. {{ username }} 
+    <p class="text-dark">{{ i }}. <a href="/user/{{ username }}" class="rank_link">{{ username }}</a></p>
     <span class="badge progress-bar-success badge-pill">{{ funds }}</span>
 </li>
