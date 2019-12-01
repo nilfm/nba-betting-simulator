@@ -3,6 +3,19 @@
 {% block app_content %}
     <h1>{{ user.username }}'s bets</h1>
     <hr>
+    <h3>Stats</h3>
+    <br>
+    <div class="container-fluid">
+        <ul class="list-group">
+            <li class="list-group-item won-bet">
+                Won {{ stats.won }} bets ({{ "%.2f"|format(100*stats.won/(stats.won+stats.lost)) }}%)
+            </li>
+            <li class="list-group-item lost-bet">
+                Lost {{ stats.lost }} bets ({{ "%.2f"|format(100*stats.lost/(stats.won+stats.lost)) }}%)
+            </li>
+        </ul>
+    </div>
+    <hr>    
     <h3>Pending bets</h3>
     <br>
     {% if pending_bets %}

@@ -81,8 +81,14 @@ def user(username):
     bets = sorted(bets, key=lambda b: datetime.strptime(b.game.date, '%Y-%m-%d'), reverse=True)
     pending_bets = [bet for bet in bets if not bet.finished]
     finished_bets = [bet for bet in bets if bet.finished]
+    num_won = sum(bet.won for bet in finished_bets)
+    stats = {
+        'won': num_won,
+        'lost': len(finished_bets) - num_won,
+        'pending': len(pending_bets) 
+    }
     is_me = user.id == current_user.id
-    return render_template("user.html", title=f"{username}'s profile",is_me=is_me, user=user, pending_bets=pending_bets, finished_bets=finished_bets)
+    return render_template("user.html", title=f"{username}'s profile", stats=stats, is_me=is_me, user=user, pending_bets=pending_bets, finished_bets=finished_bets)
 
 @app.route('/proves', methods=['GET', 'POST'])
 @login_required
