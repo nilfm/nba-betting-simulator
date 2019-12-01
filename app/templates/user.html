@@ -11,7 +11,7 @@
                 Won {{ stats.won }} bet{% if stats.won != 1 %}s{% endif %} ({{ "%.2f"|format(100*stats.won/(stats.won+stats.lost)) }}%)
             </li>
             <li class="list-group-item lost-bet">
-                Lost {{ stats.lost }} bet{% if stats.won != 1 %}s{% endif %} ({{ "%.2f"|format(100*stats.lost/(stats.won+stats.lost)) }}%)
+                Lost {{ stats.lost }} bet{% if stats.lost != 1 %}s{% endif %} ({{ "%.2f"|format(100*stats.lost/(stats.won+stats.lost)) }}%)
             </li>
         </ul>
     </div>
