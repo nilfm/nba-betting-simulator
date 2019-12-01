@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import insert_games
 import insert_scores
 
