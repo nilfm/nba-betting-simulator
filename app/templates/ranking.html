@@ -9,7 +9,7 @@
     {% endfor %}
     {% if user_index %}
     <br>
-    {% with i=user_index, username=current_user.username, funds=current_user.funds %}
+    {% with i=user_index, username=current_user.username, funds=current_user.ranking_funds %}
         {% include "user_rank.html" %}
     {% endwith %}
     {% endif %}
