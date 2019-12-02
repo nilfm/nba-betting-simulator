@@ -4,19 +4,24 @@
 <body>
     <h1>Control Panel</h1><hr>
     <div class="container-fluid">
-        <div align="center" class="form-group col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
-            <form action="/execute/insert_games" method="post">
+        <div align="center" class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+            <form action="/execute/insert_games.py" method="post">
                 <button class="btn btn-primary">Insert Games</button>
             </form>
         </div>
-        <div align="center" class="form-group col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
-            <form action="/execute/insert_scores" method="post">
+        <div align="center" class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+            <form action="/execute/insert_scores.py" method="post">
                 <button class="btn btn-primary">Insert Scores</button>
             </form>
         </div>
-        <div align="center" class="form-group col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
-            <form action="/execute/daily_task" method="post">
+        <div align="center" class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+            <form action="/execute/daily_task.py" method="post">
                 <button class="btn btn-primary">Insert Both</button>
+            </form>
+        </div>
+        <div align="center" class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-12">
+            <form action="/execute/restart_server.sh" method="post">
+                <button class="btn btn-primary">Restart Server</button>
             </form>
         </div>
     </div>

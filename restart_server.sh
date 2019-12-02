@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 cd /root/nba-betting-simulator
 source my_env/bin/activate
 pkill gunicorn 

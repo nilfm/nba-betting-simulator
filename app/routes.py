@@ -135,6 +135,6 @@ def admin():
 @app.route('/execute/<name>', methods=['POST'])
 @login_required
 def execute(name):
-    subprocess.call(f'python3 {name}.py', shell=True)
+    subprocess.call(f'./{name}', shell=True)
     flash('Script called')
     return render_template('admin.html')
