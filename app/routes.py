@@ -143,4 +143,4 @@ def execute(name):
         return redirect(url_for('index'))    
     subprocess.call(f'./{name}', shell=True)
     flash(f'Script {name} called')
-    return redirect(url_for(admin))
+    return redirect(url_for('admin'))
