@@ -136,6 +136,7 @@ def admin():
 @login_required
 def execute(name):
     if current_user.username != "nilfm":
-        return redirect(url_for('index'))    subprocess.call(f'./{name}', shell=True)
+        return redirect(url_for('index'))    
+    subprocess.call(f'./{name}', shell=True)
     flash(f'Script {name} called')
     return render_template('admin.html')
