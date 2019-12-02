@@ -8,6 +8,7 @@ from app.models import User, Game, Bet
 from flask import render_template, jsonify, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
+import subprocess
 
 TODAY = (datetime.now()-timedelta(hours=8)).strftime('%Y-%m-%d')
 IN_FILE_PATH = f"../odds/data_{TODAY}.txt"
@@ -123,3 +124,17 @@ def delete_account():
     Bet.query.filter_by(user_id=id).delete()
     db.session.commit()
     return redirect(url_for('login'))
+
+@app.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin():
+    if current_user.username != "nilfm":
+        return redirect(url_for('index'))
+    return render_template('admin.html')
+    
+@app.route('/execute/<name>', methods=['POST'])
+@login_required
+def execute(name):
+    subprocess.call(f'python3 {name}.py', shell=True)
+    flash('Script called')
+    return render_template('admin.html')

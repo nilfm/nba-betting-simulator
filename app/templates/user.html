@@ -51,11 +51,19 @@
                 <button class="btn btn-danger">Reset Account</button>
             </form>
         </div>
+        {% if user.username != "nilfm" %}
         <div align="right" class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
             <form action="/delete_account" method="post">
                 <button class="btn btn-danger">Delete Account</button>
             </form>
         </div>
+        {% else %}
+        <div align="right" class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            <form action="/admin" method="post">
+                <button class="btn btn-primary">Admin</button>
+            </form>
+        </div>
+        {% endif %}
     </div>
     {% endif %}
 {% endblock %}

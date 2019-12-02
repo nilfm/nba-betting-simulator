@@ -84,7 +84,6 @@ def finish_bets(game, score):
 def write_to_db(scores):
     for score in scores:
         games = Game.query.filter_by(date=YESTERDAY, home_team=score['home_team'], away_team=score['away_team']).all()
-        print(games)
         if len(games) == 1:
             game = games[0]
             finish_game(game, score)
