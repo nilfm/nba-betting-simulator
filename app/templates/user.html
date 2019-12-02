@@ -16,33 +16,33 @@
         </ul>
     </div>
     <hr>    
-    <h3>Pending bets</h3>
+    <h3>Pending bets{% if pending_bets %} ({{ stats.pending }}){% endif %}</h3>
     <br>
-    {% if pending_bets %}
     <div class="container-fluid">
+    {% if pending_bets %}
         <ul class="list-group">
         {% for bet in pending_bets %}
             {% include "bet.html" %}
         {% endfor %}
         </ul>
-    </div>
     {% else %}
     <p>This user has no pending bets.</p>
     {% endif %}
+    </div>
     <hr>
-    <h3>Finished bets</h3>
+    <h3>Recent finished bets</h3>
     <br>
-    {% if finished_bets %}
     <div class="container-fluid">
+    {% if finished_bets %}
         <ul class="list-group">
         {% for bet in finished_bets %}
             {% include "bet.html" %}
         {% endfor %}
         </ul>
-    </div>
     {% else %}
     <p>This user has no finished bets.</p>
     {% endif %}
+    </div>
     <hr class="col-xs-12">
     {% if is_me %}
     <div class="form-row">

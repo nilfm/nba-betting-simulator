@@ -7,6 +7,12 @@
     {% for i, username, funds in ranking %}
         {% include "user_rank.html" %}
     {% endfor %}
+    {% if user_index %}
+    <br>
+    {% with i=user_index, username=current_user.username, funds=current_user.funds %}
+        {% include "user_rank.html" %}
+    {% endwith %}
+    {% endif %}
     </ul>
 {% endblock %}
 

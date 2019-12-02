@@ -9,3 +9,5 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    NUM_BETS_SHOWN = 10
+    NUM_RANKS_SHOWN = 10

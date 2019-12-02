@@ -92,7 +92,7 @@ def user(username):
         'pending': len(pending_bets) 
     }
     is_me = user.id == current_user.id
-    return render_template("user.html", title=f"{username}'s profile", stats=stats, is_me=is_me, user=user, pending_bets=pending_bets, finished_bets=finished_bets)
+    return render_template("user.html", title=f"{username}'s profile", stats=stats, is_me=is_me, user=user, pending_bets=pending_bets, finished_bets=finished_bets[:app.config['NUM_BETS_SHOWN']])
 
 @app.route('/proves', methods=['GET', 'POST'])
 @login_required
@@ -104,9 +104,13 @@ def proves():
 
 @app.route('/ranking')
 def ranking():
-    users = User.query.order_by(User.ranking_funds.desc())
-    ranks = [(i, u.username, u.ranking_funds) for i, u in enumerate(users, start=1)]
-    return render_template('ranking.html', title='Ranking', ranking=ranks)
+    users = User.query.order_by(User.ranking_funds.desc()).all()
+    best_users = users[:app.config['NUM_RANKS_SHOWN']]
+    ranks = [(i, u.username, u.ranking_funds) for i, u in enumerate(best_users, start=1)]
+    user_index = users.index(current_user) + 1
+    if user_index <= app.config['NUM_RANKS_SHOWN']:
+        user_index = None
+    return render_template('ranking.html', title='Ranking', ranking=ranks, user_index=user_index)
 
 @app.route('/reset_account', methods=['POST'])
 @login_required
@@ -139,4 +143,4 @@ def execute(name):
         return redirect(url_for('index'))    
     subprocess.call(f'./{name}', shell=True)
     flash(f'Script {name} called')
-    return render_template('admin.html')
+    return redirect(url_for(admin))
