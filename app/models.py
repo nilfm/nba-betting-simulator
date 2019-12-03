@@ -1,5 +1,5 @@
 from app import db, login
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from sqlalchemy.exc import IntegrityError
@@ -169,3 +169,24 @@ class Bet(db.Model):
         else:
             did_win = "won" if self.won else "lost"
             return f"<{self.user.username} bet {self.amount} on {self.game} {bet_for} and {did_win}>"
+
+class TimestampGames(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, index=True)
+    
+    def __init__(self):
+        self.timestamp = datetime.now() + timedelta(hours=1)
+    
+    def __repr__(self):
+        return self.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+    
+class TimestampScores(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, index=True)
+    
+    def __init__(self):
+        self.timestamp = datetime.now() + timedelta(hours=1)
+    
+    def __repr__(self):
+        return self.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+

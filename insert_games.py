@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 import os
 from app import db
-from app.models import Game, Bet
+from app.models import *
 from sqlalchemy.exc import IntegrityError
 import settings
 
@@ -93,9 +93,15 @@ def process_and_save():
     write_to_data_file(processed)
     write_to_db(processed)
 
+def save_timestamp():
+    t = TimestampGames()
+    db.session.add(t)
+    db.session.commit()
+
 def main():
     write_to_raw_file()
     process_and_save()
-
+    save_timestamp()
+    
 if __name__ == '__main__':
     main()

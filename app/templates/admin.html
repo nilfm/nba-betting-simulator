@@ -4,6 +4,14 @@
 <body>
     <h1>Control Panel</h1><hr>
     <div class="container-fluid">
+        <h4>Games updated on</h4>
+        <p>{{last_games}}</p>
+        <br>
+        <h4>Scores updated on</h4>
+        <p>{{last_scores}}</p>
+    </div>
+    <hr>
+    <div class="container-fluid">
         <div align="center" class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-12">
             <form action="/execute/insert_games.py" method="post">
                 <button class="btn btn-primary">Insert Games</button>

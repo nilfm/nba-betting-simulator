@@ -91,10 +91,16 @@ def write_to_db(scores):
             finish_game(game, score)
             finish_bets(game, score)
 
+def save_timestamp():
+    t = TimestampScores()
+    db.session.add(t)
+    db.session.commit()
+
 def main():
     scores = get_scores()
     write_scores_to_file(scores)
     write_to_db(scores)
+    save_timestamp()
 
 if __name__ == '__main__':
     main()

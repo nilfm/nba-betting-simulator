@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timedelta
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, BetForm
-from app.models import User, Game, Bet
+from app.models import *
 from flask import render_template, jsonify, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -134,7 +134,9 @@ def delete_account():
 def admin():
     if current_user.username != "nilfm":
         return redirect(url_for('index'))
-    return render_template('admin.html')
+    last_games = TimestampGames.query.order_by(TimestampGames.timestamp.desc()).first()
+    last_scores = TimestampScores.query.order_by(TimestampScores.timestamp.desc()).first()
+    return render_template('admin.html', last_games=last_games, last_scores=last_scores)
     
 @app.route('/execute/<name>', methods=['POST'])
 @login_required
