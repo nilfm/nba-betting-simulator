@@ -7,11 +7,13 @@
     {% for i, username, funds in ranking %}
         {% include "user_rank.html" %}
     {% endfor %}
+    {% if not current_user.is_anonymous %}
     {% if user_index %}
     <br>
     {% with i=user_index, username=current_user.username, funds=current_user.ranking_funds %}
         {% include "user_rank.html" %}
     {% endwith %}
+    {% endif %}
     {% endif %}
     </ul>
 {% endblock %}
