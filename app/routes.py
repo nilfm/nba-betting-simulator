@@ -107,9 +107,11 @@ def ranking():
     users = User.query.order_by(User.ranking_funds.desc()).all()
     best_users = users[:app.config['NUM_RANKS_SHOWN']]
     ranks = [(i, u.username, u.ranking_funds) for i, u in enumerate(best_users, start=1)]
-    user_index = users.index(current_user) + 1
-    if user_index <= app.config['NUM_RANKS_SHOWN']:
-        user_index = None
+    user_index = None
+    if not current_user.is_anonymous:
+        user_index = users.index(current_user) + 1
+        if user_index <= app.config['NUM_RANKS_SHOWN']:
+            user_index = None
     return render_template('ranking.html', title='Ranking', ranking=ranks, user_index=user_index)
 
 @app.route('/reset_account', methods=['POST'])
