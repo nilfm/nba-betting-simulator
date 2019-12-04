@@ -1,9 +1,11 @@
 python-dotenv
 requests
 flask
+flask-mail
 flask-wtf
 flask-sqlalchemy
 flask-migrate
 flask-login
 flask-bootstrap
 bs4
+pyjwt
