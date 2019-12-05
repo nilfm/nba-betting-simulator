@@ -190,12 +190,15 @@ class Bet(db.Model):
 class TimestampGames(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True)
+    api_remaining = db.Column(db.Integer)
     
-    def __init__(self):
+    def __init__(self, api_remaining):
         self.timestamp = datetime.now() + timedelta(hours=1)
+        self.api_remaining = api_remaining
     
     def __repr__(self):
-        return self.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        date_time = self.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        return f"{date_time} - {self.api_remaining} calls left"
     
 class TimestampScores(db.Model):
     id = db.Column(db.Integer, primary_key=True)

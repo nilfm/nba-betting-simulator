@@ -1,6 +1,7 @@
 from app import db
 from app.models import *
 
+'''
 # Update user's ranking funds
 users = User.query.all()
 for user in users:
@@ -17,4 +18,10 @@ for bet in bets:
     odds = bet.game.home_odds if bet.bet_on_home else bet.game.away_odds
     bet.odds = odds
     db.session.commit()
-    
+'''
+
+# Update api calls remaining
+ts = TimestampGames.query.all()
+for t in ts:
+    t.api_remaining = 500
+    db.session.commit()

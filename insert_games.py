@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import json
 import requests
 from datetime import datetime
@@ -21,10 +20,11 @@ TIME_DIFFERENCE = 3600*8    # Avoids situation with games at 11 pm and 1 am on "
 
 def get():
     r = requests.get(ODDS_URL)
-    return r.json()
+    data = r.json()
+    data['api_remaining'] = r.headers['X-Requests-Remaining']
+    return data
     
-def write_to_raw_file():
-    data = get()
+def write_to_raw_file(data):
     with open(os.path.join(RAW_DIR, RAW_FILE_PATH), 'w') as outfile:
         json.dump(data, outfile, indent=4)
 
@@ -93,15 +93,16 @@ def process_and_save():
     write_to_data_file(processed)
     write_to_db(processed)
 
-def save_timestamp():
-    t = TimestampGames()
+def save_timestamp(api_remaining):
+    t = TimestampGames(api_remaining)
     db.session.add(t)
     db.session.commit()
 
 def main():
-    write_to_raw_file()
+    data = get()
+    write_to_raw_file(data)
     process_and_save()
-    save_timestamp()
-    
+    save_timestamp(data['api_remaining'])
+
 if __name__ == '__main__':
     main()
