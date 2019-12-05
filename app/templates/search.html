@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>{{ 'Search Results' }}</h1>
+    <hr>
+    <ul class="list-group">
+    {% for user in users %}
+        {% include "user_rank.html" %}
+    {% endfor %}
+    </ul>
+{% endblock %}

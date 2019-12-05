@@ -1,4 +1,5 @@
 from app import app, db, login
+from app.search import add_to_index, remove_from_index, query_index
 from datetime import datetime, timedelta
 from time import time
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,14 +7,71 @@ from flask_login import UserMixin
 from sqlalchemy.exc import IntegrityError
 import jwt
 
-class User(UserMixin, db.Model):
+class SearchableMixin():
+    @classmethod
+    def search(cls, expression, amount):
+        ids, total = query_index(cls.__tablename__, expression, amount=amount)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = []
+        for i, id in enumerate(ids):
+            when.append((id, i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)), total
+
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            'add': list(session.new),
+            'update': list(session.dirty),
+            'delete': list(session.deleted)
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+
+db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
+db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
+
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
+)
+
+class User(SearchableMixin, UserMixin, db.Model):
+    __searchable__ = ['username']
+    
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     funds = db.Column(db.Integer)
-    ranking_funds = db.Column(db.Integer)
+    ranking_funds = db.Column(db.Integer, index=True)
     date_reg = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    followed = db.relationship(
+        'User', 
+        secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'),
+        lazy='dynamic'
+    )
     
     def __init__(self, username, email, funds=1000):
         self.username = username
@@ -29,6 +87,22 @@ class User(UserMixin, db.Model):
         
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+            
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+            
+    def is_following(self, user):
+        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
+
+    def followed_users(self):
+        followed =  User.query.join(
+            followers, (followers.c.followed_id == User.id)).filter(followers.c.follower_id == self.id)
+        return followed.union(self).order_by(User.ranking_funds.desc())
 
     def place_bet(self, game, amount, bet_on_home):
         bet = Bet(
@@ -209,4 +283,5 @@ class TimestampScores(db.Model):
     
     def __repr__(self):
         return self.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+
 

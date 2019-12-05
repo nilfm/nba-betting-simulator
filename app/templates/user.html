@@ -1,7 +1,26 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>{{ user.username }}'s bets</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                <h2>{{ user.username }}'s bets</h2>
+            </div>
+            {% if not is_me %}
+            <div style="margin-top: 20px;" align="right" class="center-block col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                {% if not is_following %}
+                <a class="btn btn-primary" href="{{ url_for('follow', username=user.username) }}">
+                    Follow
+                </a>
+                {% else %}
+                <a class="btn btn-primary" href="{{ url_for('unfollow', username=user.username) }}">
+                    Unfollow
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
     <hr>
     <h3>Stats</h3>
     <br>

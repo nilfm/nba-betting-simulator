@@ -3,8 +3,21 @@
 {% block app_content %}
     <h1>Ranking</h1>
     <hr>
+    <!-- Default unchecked -->
+    <div class="custom-control custom-radio">
+      <input type="radio" class="custom-control-input" id="defaultUnchecked" name="defaultExampleRadios">
+      <label class="custom-control-label" for="defaultUnchecked">Default unchecked</label>
+    </div>
+
+    <!-- Default checked -->
+    <div class="custom-control custom-radio">
+      <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios" checked>
+      <label class="custom-control-label" for="defaultChecked">Default checked</label>
+    </div>
+    <hr>
+    
     <ul class="list-group">
-    {% for i, username, funds in ranking %}
+    {% for i, user in ranking %}
         {% include "user_rank.html" %}
     {% endfor %}
     {% if not current_user.is_anonymous %}

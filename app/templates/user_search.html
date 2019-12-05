@@ -1,0 +1,10 @@
+<style>
+    .rank_link {
+        color: rgba(0, 0, 0, 0.8) !important;    
+    }
+</style>
+
+<li class="list-group-item d-flex justify-content-between align-items-center">
+    <a href={{ url_for('user', username=user.username) }}>{{ user.username }}</a>
+    <span class="badge progress-bar-info badge-pill"><a href={{ url_for('follow', username=user.username) }}>Follow</a></span>
+</li>

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from flask import request
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, NumberRange
@@ -50,4 +51,14 @@ class BetForm(FlaskForm):
     def validate_amount(self, amount):
         if amount.data is None or amount.data <= 0 or amount.data > current_user.funds:
             raise ValidationError('Invalid bet amount.')
+    
+class SearchForm(FlaskForm):
+    q = StringField('Search', validators=[DataRequired()])
+    
+    def __init__(self, *args, **kwargs):
+        if 'formdata' not in kwargs:
+            kwargs['formdata'] = request.args
+        if 'csrf_enabled' not in kwargs:
+            kwargs['csrf_enabled'] = False
+        super(SearchForm, self).__init__(*args, **kwargs)
     

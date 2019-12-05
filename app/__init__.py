@@ -8,6 +8,7 @@ from flask_mail import Mail
 import os
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
+from elasticsearch import Elasticsearch
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -44,5 +45,6 @@ if not app.debug:
 
     app.logger.setLevel(logging.INFO)
     app.logger.info('NBA Betting Simulator')
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
 from app import routes, models

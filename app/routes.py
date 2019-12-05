@@ -6,7 +6,7 @@ from app import app, db
 from app.forms import *
 from app.models import *
 from app.email import *
-from flask import render_template, jsonify, flash, redirect, url_for, request
+from flask import render_template, jsonify, flash, redirect, url_for, request, g
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 import subprocess
@@ -122,7 +122,38 @@ def user(username):
         'pending': len(pending_bets) 
     }
     is_me = user.id == current_user.id
-    return render_template("user.html", title=f"{username}'s profile", stats=stats, is_me=is_me, user=user, pending_bets=pending_bets, finished_bets=finished_bets[:app.config['NUM_BETS_SHOWN']])
+    is_following = current_user.is_following(user)
+    return render_template("user.html", title=f"{username}'s profile", stats=stats, is_me=is_me, is_following=is_following, user=user, pending_bets=pending_bets, finished_bets=finished_bets[:app.config['NUM_BETS_SHOWN']])
+
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash(f'User {username} not found.')
+        return redirect(url_for('index'))
+    if user == current_user:
+        flash('You cannot follow yourself!')
+        return redirect(url_for('user', username=username))
+    current_user.follow(user)
+    db.session.commit()
+    flash(f'You are now following {username}!')
+    return redirect(url_for('user', username=username))
+
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash(f'User {username} not found.')
+        return redirect(url_for('index'))
+    if user == current_user:
+        flash('You cannot unfollow yourself!')
+        return redirect(url_for('user', username=username))
+    current_user.unfollow(user)
+    db.session.commit()
+    flash(f'You are no longer following {username}.')
+    return redirect(url_for('user', username=username))
 
 @app.route('/proves', methods=['GET', 'POST'])
 @login_required
@@ -136,7 +167,7 @@ def proves():
 def ranking():
     users = User.query.order_by(User.ranking_funds.desc()).all()
     best_users = users[:app.config['NUM_RANKS_SHOWN']]
-    ranks = [(i, u.username, u.ranking_funds) for i, u in enumerate(best_users, start=1)]
+    ranks = [(i, u) for i, u in enumerate(best_users, start=1)]
     user_index = None
     if not current_user.is_anonymous:
         user_index = users.index(current_user) + 1
@@ -178,3 +209,16 @@ def execute(name):
     subprocess.call(f'./{name}', shell=True)
     flash(f'Script {name} called')
     return redirect(url_for('admin'))
+
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        g.search_form = SearchForm()
+
+@app.route('/search')
+@login_required
+def search():
+    if not g.search_form.validate():
+        return redirect(url_for('index'))
+    users, total = User.search(g.search_form.q.data, 5)
+    return render_template('search.html', title='Search', users=users)

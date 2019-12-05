@@ -9,3 +9,4 @@ flask-login
 flask-bootstrap
 bs4
 pyjwt
+elasticsearch
