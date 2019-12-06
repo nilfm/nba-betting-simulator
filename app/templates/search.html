@@ -3,6 +3,8 @@
 {% block app_content %}
     <h1>{{ 'Search Results' }}</h1>
     <hr>
+    <h4>{{ total }} users found</h4>
+    <br>
     <ul class="list-group">
     {% for user in users %}
         {% include "user_search.html" %}
