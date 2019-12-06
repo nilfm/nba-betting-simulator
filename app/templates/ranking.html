@@ -15,6 +15,7 @@
 {% block app_content %}
     <h1>Ranking</h1>
     <hr>
+    {% if current_user.is_authenticated %}
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
       <label class="btn btn-info active" onclick="show_global()">
         <input type="radio" name="options" id="global-btn" autocomplete="off" checked>
@@ -26,6 +27,7 @@
       </label>
     </div>
     <hr>
+    {% endif %}
     
     <ul class="list-group" id="global">
     {% for i, user in ranking.global %}
@@ -39,6 +41,7 @@
     {% endif %}
     </ul>
     
+    {% if current_user.is_authenticated %}
     <ul class="list-group hidden" id="followed">
     {% for i, user in ranking.followed %}
         {% include "user_rank.html" %}
@@ -50,5 +53,6 @@
     {% endwith %}
     {% endif %}
     </ul>
+    {% endif %}
 {% endblock %}
 
