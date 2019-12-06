@@ -139,6 +139,7 @@ class User(SearchableMixin, UserMixin, db.Model):
     
     def reset_funds(self, amount=1000):
         self.funds = int(amount)
+        self.ranking_funds = int(amount)
         db.session.commit()
     
     @login.user_loader
