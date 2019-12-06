@@ -3,7 +3,7 @@
 {% block app_content %}
     <h1>{{ 'Search Results' }}</h1>
     <hr>
-    <h4>{{ total }} users found</h4>
+    <h4>{{ total }} user{% if total != 1 %}s{% endif %} found</h4>
     <br>
     <ul class="list-group">
     {% for user in users %}
