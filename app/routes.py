@@ -246,6 +246,14 @@ def search():
     users, total = User.search(g.search_form.q.data, 5)
     return render_template('search.html', title='Search', users=users, total=total)
 
+def custom_key(x):
+    mapping = {
+        'Me': 0,
+        'Following': 1,
+        'Not Following': 2 
+    }
+    return mapping[x['data']['category']], x['value']
+
 @app.route('/users', methods=['GET'])
 @login_required
 def users():
@@ -253,8 +261,9 @@ def users():
     params = [
         {
             'value': u.username,
-            'data': { 'category': 'Following' if current_user.is_following(u) or current_user.id == u.id else 'Not Following' }
+            'data': { 'category': 'Following' if current_user.is_following(u) else 'Me' if current_user.id == u.id else 'Not Following' }
         }
         for u in users
     ]
+    params = sorted(params, key=custom_key)
     return jsonify(params)
