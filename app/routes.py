@@ -249,6 +249,12 @@ def search():
 @app.route('/users', methods=['GET'])
 @login_required
 def users():
-    users = db.session.query(User.username).all()
-    users = [u for lst in users for u in lst] # flatten list
-    return jsonify(users)
+    users = User.query.all()
+    params = [
+        {
+            'value': u.username,
+            'data': { 'category': 'Following' if current_user.is_following(u) or current_user.id == u.id else 'Not Following' }
+        }
+        for u in users
+    ]
+    return jsonify(params)

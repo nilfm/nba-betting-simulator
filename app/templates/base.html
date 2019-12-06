@@ -19,8 +19,8 @@
     .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
     .autocomplete-selected { background: #F0F0F0; }
     .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
-    .autocomplete-group { padding: 2px 5px; }
-    .autocomplete-group strong { display: block; border-bottom: 1px solid #000;
+    .autocomplete-group { padding: 2px 5px;}
+    .autocomplete-group strong { display: block; color: black; border-bottom: 1px solid #000; }
 </style>
 {% endblock %}
 
@@ -101,13 +101,15 @@
             dataType: 'json',
             success: function (data) {
                 //send parse data to autocomplete function
+                console.log(data);
                 loadSuggestions(data);
             }
         });
         function loadSuggestions(options) {
             $('#autocomplete').autocomplete({
-		triggerSelectOnValidInput: false,
+                triggerSelectOnValidInput: false,
                 lookup: options,
+                groupBy: 'category',
                 onSelect: function (suggestion) {
                     $('#selected_option').html(suggestion.value);
                     $('#searchbox').submit();

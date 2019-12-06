@@ -10,6 +10,7 @@ $(document).ready(function(){
     });
     function loadSuggestions(options) {
         $('#autocomplete').autocomplete({
+            triggerSelectOnValidInput: false,
             lookup: options,
             onSelect: function (suggestion) {
                 $('#selected_option').html(suggestion.value);
