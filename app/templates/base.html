@@ -1,19 +1,7 @@
-<style>
-    .won-bet {
-        background-color: rgba(0, 255, 0, 0.2) !important;
-    }
-
-    .lost-bet {
-        background-color: rgba(255, 0, 0, 0.2) !important; 
-    }
-
-    .pending-bet {
-
-    }
-    body { 
-        padding-top: 65px; 
-    }
-</style>
+{% block styles %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
 
 {% extends "bootstrap/base.html" %}
 
@@ -31,6 +19,9 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="{{ url_for('index') }}">NBA Betting Simulator</a>
             </div>
@@ -39,9 +30,9 @@
                     <li><a href="{{ url_for('ranking') }}">Ranking</a></li>
                 </ul>
                 {% if g.search_form %}
-                <form class="navbar-form navbar-left" method="get" action="{{ url_for('search') }}">
+                <form id="searchbox" class="navbar-form navbar-left" method="get" action="{{ url_for('search') }}">
                     <div class="form-group">
-                        {{ g.search_form.q(size=20, class='form-control',
+                        {{ g.search_form.q(id="autocomplete", size=20, class='form-control',
                             placeholder=g.search_form.q.label.text) }}
                     </div>
                 </form>
@@ -75,4 +66,11 @@
         {% block app_content %}
         {% endblock %}
     </div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.2.27/jquery.autocomplete.min.js"></script>
+<script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
 {% endblock %}

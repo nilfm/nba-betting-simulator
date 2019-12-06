@@ -245,3 +245,10 @@ def search():
         return redirect(url_for('index'))
     users, total = User.search(g.search_form.q.data, 5)
     return render_template('search.html', title='Search', users=users, total=total)
+
+@app.route('/users', methods=['GET'])
+@login_required
+def users():
+    users = db.session.query(User.username).all()
+    users = [u for lst in users for u in lst] # flatten list
+    return jsonify(users)
