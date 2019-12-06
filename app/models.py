@@ -102,7 +102,8 @@ class User(SearchableMixin, UserMixin, db.Model):
     def followed_users(self):
         followed =  User.query.join(
             followers, (followers.c.followed_id == User.id)).filter(followers.c.follower_id == self.id)
-        return followed.union(self).order_by(User.ranking_funds.desc())
+        me = User.query.filter_by(id=self.id)
+        return followed.union(me).order_by(User.ranking_funds.desc()).all()
 
     def place_bet(self, game, amount, bet_on_home):
         bet = Bet(

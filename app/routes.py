@@ -164,16 +164,32 @@ def proves():
     return render_template('prova.html', games_forms=games_forms, date=TODAY)
 
 @app.route('/ranking')
+@login_required
 def ranking():
     users = User.query.order_by(User.ranking_funds.desc()).all()
+    followed = current_user.followed_users()
     best_users = users[:app.config['NUM_RANKS_SHOWN']]
+    best_followed = followed[:app.config['NUM_RANKS_SHOWN']]
+    
     ranks = [(i, u) for i, u in enumerate(best_users, start=1)]
-    user_index = None
-    if not current_user.is_anonymous:
-        user_index = users.index(current_user) + 1
-        if user_index <= app.config['NUM_RANKS_SHOWN']:
-            user_index = None
-    return render_template('ranking.html', title='Ranking', ranking=ranks, user_index=user_index)
+    ranks_followed = [(i, u) for i, u in enumerate(best_followed, start=1)]
+    
+    user_index = users.index(current_user) + 1
+    if user_index <= app.config['NUM_RANKS_SHOWN']:
+        user_index = None
+    followed_index = followed.index(current_user) + 1
+    if followed_index <= app.config['NUM_RANKS_SHOWN']:
+        followed_index = None
+    
+    ranking = {
+        'global': ranks,
+        'followed': ranks_followed
+    }
+    user_index = {
+        'global': user_index,
+        'followed': followed_index
+    }
+    return render_template('ranking.html', title='Ranking', ranking=ranking, user_index=user_index)
 
 @app.route('/reset_account', methods=['POST'])
 @login_required

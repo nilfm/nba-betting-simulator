@@ -1,32 +1,53 @@
+<script>
+    function show_global(){
+        document.getElementById('global').classList.remove('hidden')
+        document.getElementById('followed').classList.add('hidden')
+    }
+    
+    function show_followed(){
+        document.getElementById('global').classList.add('hidden')
+        document.getElementById('followed').classList.remove('hidden')
+    }
+</script>
+
 {% extends "base.html" %}
 
 {% block app_content %}
     <h1>Ranking</h1>
     <hr>
-    <!-- Default unchecked -->
-    <div class="custom-control custom-radio">
-      <input type="radio" class="custom-control-input" id="defaultUnchecked" name="defaultExampleRadios">
-      <label class="custom-control-label" for="defaultUnchecked">Default unchecked</label>
-    </div>
-
-    <!-- Default checked -->
-    <div class="custom-control custom-radio">
-      <input type="radio" class="custom-control-input" id="defaultChecked" name="defaultExampleRadios" checked>
-      <label class="custom-control-label" for="defaultChecked">Default checked</label>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-info active" onclick="show_global()">
+        <input type="radio" name="options" id="global-btn" autocomplete="off" checked>
+        Global
+      </label>
+      <label class="btn btn-info" onclick="show_followed()">
+        <input type="radio" name="options" id="followed-btn" autocomplete="off">
+        Followed
+      </label>
     </div>
     <hr>
     
-    <ul class="list-group">
-    {% for i, user in ranking %}
+    <ul class="list-group" id="global">
+    {% for i, user in ranking.global %}
         {% include "user_rank.html" %}
     {% endfor %}
-    {% if not current_user.is_anonymous %}
-    {% if user_index %}
+    {% if user_index.global %}
     <br>
-    {% with i=user_index, username=current_user.username, funds=current_user.ranking_funds %}
+    {% with i=user_index.global, username=current_user.username, funds=current_user.ranking_funds %}
         {% include "user_rank.html" %}
     {% endwith %}
     {% endif %}
+    </ul>
+    
+    <ul class="list-group hidden" id="followed">
+    {% for i, user in ranking.followed %}
+        {% include "user_rank.html" %}
+    {% endfor %}
+    {% if user_index.followed %}
+    <br>
+    {% with i=user_index.followed, username=current_user.username, funds=current_user.ranking_funds %}
+        {% include "user_rank.html" %}
+    {% endwith %}
     {% endif %}
     </ul>
 {% endblock %}

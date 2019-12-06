@@ -9,7 +9,7 @@ def add_to_index(index, model):
 def remove_from_index(index, model):
     current_app.elasticsearch.delete(index=index, id=model.id)
 
-def query_index(index, query, amount=10):
+def query_index(index, query, field='username', amount=10):
     search = current_app.elasticsearch.search(
         index=index,
         body=
@@ -17,11 +17,29 @@ def query_index(index, query, amount=10):
             'size': amount,
             'query':            
             {
-                'query_string': 
+                'bool':
                 {
-                    'query': "*" + query + "*", # substring search 
+                    'should':
+                    [
+                    {
+                        'fuzzy': 
+                        {
+                            field: 
+                            {
+                                'value': query,
+                                'fuzziness': 5
+                            }   
+                        }
+                    },
+                    {
+                        'prefix':
+                        {
+                            f'{field}.keyword': query
+                        }
+                    }
+                    ]
                 }
-            }
+            },
         }
     )
     ids = [int(hit['_id']) for hit in search['hits']['hits']]
