@@ -10,10 +10,9 @@ The website is available <a href="http://nbabettingsimulator.com">here</a>.
 
 * Make the bets via AJAX request so it doesn't reload the page
 * Javascript to dynamically inform the user of the potential winnings of each bet
-* Search user function
-* Follow user function
 * Two rankings: all players and people you follow
 * Pagination in both rankings and user's bets
 * Add game details - link to game summary from CBS sports, etc
 * Ask for confirmation before resetting/deleting account
 * Popup to reset account if ranking_funds == 0
+* Autocomplete for search
