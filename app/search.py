@@ -1,4 +1,5 @@
 from flask import current_app
+import pprint
 
 def add_to_index(index, model):
     payload = {}
@@ -26,15 +27,17 @@ def query_index(index, query, field='username', amount=10):
                         {
                             field: 
                             {
-                                'value': query,
-                                'fuzziness': 5
+                                'value': query
                             }   
                         }
                     },
                     {
                         'prefix':
                         {
-                            f'{field}.keyword': query
+                            field:
+                            {
+                                'value': query
+                            }
                         }
                     }
                     ]
