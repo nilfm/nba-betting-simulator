@@ -12,7 +12,7 @@ $(document).ready(function(){
         $('#autocomplete').autocomplete({
             triggerSelectOnValidInput: false,
             lookup: options,
-            lookupLimit: 10,
+            lookupLimit: 5,
             onSelect: function (suggestion) {
                 $('#selected_option').html(suggestion.value);
                 $('#searchbox').submit();
