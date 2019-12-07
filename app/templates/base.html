@@ -37,6 +37,14 @@
 </title>
 {% endblock %}
 
+{% block title %}
+    {% if title %}
+        {{ title }} - NBA Betting Simulator
+    {% else %}
+        NBA Betting Simulator
+    {% endif %}
+{% endblock %}
+
 {% block navbar %}
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
