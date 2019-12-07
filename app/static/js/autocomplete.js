@@ -5,6 +5,7 @@ $(document).ready(function(){
         dataType: 'json',
         success: function (data) {
             //send parse data to autocomplete function
+            console.log(data);
             loadSuggestions(data);
         }
     });
@@ -12,7 +13,7 @@ $(document).ready(function(){
         $('#autocomplete').autocomplete({
             triggerSelectOnValidInput: false,
             lookup: options,
-            lookupLimit: 10,
+            groupBy: 'category',
             onSelect: function (suggestion) {
                 $('#selected_option').html(suggestion.value);
                 $('#searchbox').submit();
