@@ -97,10 +97,11 @@ def save_timestamp():
     db.session.commit()
 
 def main():
-    scores = get_scores()
-    write_scores_to_file(scores)
-    write_to_db(scores)
-    save_timestamp()
+    with app.app_context():
+        scores = get_scores()
+        write_scores_to_file(scores)
+        write_to_db(scores)
+        save_timestamp()
 
 if __name__ == '__main__':
     main()
