@@ -12,6 +12,5 @@ The website is available <a href="http://nbabettingsimulator.com">here</a>.
 * Javascript to dynamically inform the user of the potential winnings of each bet
 * Pagination in both rankings and user's bets
 * Add game details - link to game summary from CBS sports, etc
-* Ask for confirmation before resetting/deleting account
 * Popup to reset account if ranking_funds == 0
-* Improve elasticsearch parameters
+* Stats page with stats by team, etc
