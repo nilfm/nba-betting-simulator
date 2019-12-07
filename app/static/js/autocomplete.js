@@ -14,6 +14,7 @@ $(document).ready(function(){
             triggerSelectOnValidInput: false,
             lookup: options,
             groupBy: 'category',
+            lookupLimit: 5,
             onSelect: function (suggestion) {
                 $('#selected_option').html(suggestion.value);
                 $('#searchbox').submit();
