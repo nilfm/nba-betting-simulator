@@ -244,7 +244,7 @@ def search():
     if not g.search_form.validate():
         return redirect(url_for('index'))
     users, total = User.search(g.search_form.q.data, 5)
-    return render_template('search.html', title='Search', users=users, total=total)
+    return render_template('search.html', title='Search', users=users, total=len(users))
 
 def custom_key(x):
     mapping = {
