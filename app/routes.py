@@ -11,14 +11,13 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 import subprocess
 
-TODAY = (datetime.now()-timedelta(hours=8)).strftime('%Y-%m-%d')
-IN_FILE_PATH = f"../odds/data_{TODAY}.txt"
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
+    TODAY = (datetime.now()-timedelta(hours=8)).strftime('%Y-%m-%d')
     games = Game.query.filter_by(date=TODAY).all()
     already_bet_home = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=True).first() is not None for g in games]
     already_bet_away = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=False).first() is not None for g in games]
@@ -158,6 +157,7 @@ def unfollow(username):
 @app.route('/proves', methods=['GET', 'POST'])
 @login_required
 def proves():
+    TODAY = (datetime.now()-timedelta(hours=8)).strftime('%Y-%m-%d')
     games = Game.query.filter_by(date=TODAY).all()
     forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
     games_forms = list(zip(games, forms[::2], forms[1::2]))
