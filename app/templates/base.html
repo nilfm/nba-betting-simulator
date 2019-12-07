@@ -26,6 +26,10 @@
 
 {% extends "bootstrap/base.html" %}
 
+{% block head %}
+<meta name="viewport" content="width=device-width">
+{% endblock %}
+
 {% block title %}
     {% if title %}
         {{ title }} - NBA Betting Simulator
