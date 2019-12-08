@@ -4,7 +4,9 @@
     }
 </style>
 
-<li class="list-group-item d-flex justify-content-between align-items-center">
-    <a href="/user/{{ user.username }}" class="rank_link">{{ user.username }}</a>
-    <span class="badge progress-bar-success badge-pill">{{ user.ranking_funds }}</span>
-</li>
+<a href="/user/{{ user.username }}" class="rank_link">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ user.username }}
+        <span class="badge progress-bar-success badge-pill">{{ user.ranking_funds }}</span>
+    </li>
+</a>
