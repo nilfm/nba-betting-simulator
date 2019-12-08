@@ -9,11 +9,19 @@ from app import db
 from app.models import *
 from sqlalchemy.exc import IntegrityError
 
-YESTERDAY_URL = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
-YESTERDAY = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
-URL = f'https://www.cbssports.com/nba/scoreboard/{YESTERDAY_URL}/'
+YESTERDAY = {}
+YESTERDAY['datetime_url'] = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+YESTERDAY['datetime_file'] = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+YESTERDAY['url'] = f'https://www.cbssports.com/nba/scoreboard/{YESTERDAY["datetime_url"]}/'
+YESTERDAY['scores_file_path'] = f'scores_{YESTERDAY["datetime_file"]}.txt'
+
+TODAY = {}
+TODAY['datetime_url'] = datetime.now().strftime('%Y%m%d')
+TODAY['datetime_file'] = datetime.now().strftime('%Y-%m-%d')
+TODAY['url'] = f'https://www.cbssports.com/nba/scoreboard/{TODAY["datetime_url"]}/'
+TODAY['scores_file_path'] = f'scores_{TODAY["datetime_file"]}.txt'
+
 SCORES_DIR = 'scores'
-SCORES_FILE_PATH = f'scores_{YESTERDAY}.txt'
 TEAMS_FILE_PATH = 'teams.json'
 
 def shorten_team(name):
@@ -23,10 +31,10 @@ def shorten_team(name):
     shortened = {t['simple_name'] : t['short_name'] for t in teams}
     return shortened[name]
 
-def get_scores():
+def get_scores(day):
     games = []
 
-    page = requests.get(URL)
+    page = requests.get(day['url'])
     soup = BeautifulSoup(page.text, 'html.parser')
     all_games = soup.findAll("div", {"class": "live-update"})
     for g in all_games:
@@ -58,10 +66,12 @@ def get_scores():
         }
         for game in games if len(game['scores']) == 2
     ]
+    print(day)
+    print(good_games)
     return good_games
 
-def write_scores_to_file(scores):
-    with open(os.path.join(SCORES_DIR, SCORES_FILE_PATH), 'w') as outfile:
+def write_scores_to_file(day, scores):
+    with open(os.path.join(SCORES_DIR, day['scores_file_path']), 'w') as outfile:
         json.dump(scores, outfile, indent=4)
 
 def finish_game(game, score):
@@ -83,9 +93,9 @@ def finish_bets(game, score):
             db.session.rollback()
             
             
-def write_to_db(scores):
+def write_to_db(day, scores):
     for score in scores:
-        games = Game.query.filter_by(date=YESTERDAY, home_team=score['home_team'], away_team=score['away_team']).all()
+        games = Game.query.filter_by(date=day['datetime_file'], home_team=score['home_team'], away_team=score['away_team']).all()
         if len(games) == 1:
             game = games[0]
             finish_game(game, score)
@@ -98,9 +108,10 @@ def save_timestamp():
 
 def main():
     with app.app_context():
-        scores = get_scores()
-        write_scores_to_file(scores)
-        write_to_db(scores)
+        for day in YESTERDAY, TODAY:
+            scores = get_scores(day)
+            write_scores_to_file(day, scores)
+            write_to_db(day, scores)
         save_timestamp()
 
 if __name__ == '__main__':
