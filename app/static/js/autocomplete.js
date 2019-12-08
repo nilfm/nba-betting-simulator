@@ -17,7 +17,7 @@ $(document).ready(function(){
             lookupLimit: 5,
             onSelect: function (suggestion) {
                 $('#selected_option').html(suggestion.value);
-                $('#searchbox').submit();
+                window.location.href = '/user/'+suggestion.value;
             }
         });
     }
