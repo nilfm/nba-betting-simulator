@@ -12,12 +12,11 @@ class SearchableMixin():
     def search(cls, expression, amount):
         ids, total = query_index(cls.__tablename__, expression, amount=amount)
         if total == 0:
-            return cls.query.filter_by(id=0), 0
+            return cls.query.filter_by(id=0).all(), 0
         when = []
         for i, id in enumerate(ids):
             when.append((id, i))
-        return cls.query.filter(cls.id.in_(ids)).order_by(
-            db.case(when, value=cls.id)).all(), total
+        return cls.query.filter(cls.id.in_(ids)).order_by(db.case(when, value=cls.id)).all(), total
 
     @classmethod
     def before_commit(cls, session):
