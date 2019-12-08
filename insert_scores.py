@@ -66,8 +66,6 @@ def get_scores(day):
         }
         for game in games if len(game['scores']) == 2
     ]
-    print(day)
-    print(good_games)
     return good_games
 
 def write_scores_to_file(day, scores):
@@ -84,7 +82,6 @@ def finish_game(game, score):
 def finish_bets(game, score):
     bets = Bet.query.filter_by(game_id = game.id).all()
     for bet in bets:
-        print("HERE: ", bet)
         home_won = int(score['home_score']) > int(score['away_score'])
         right = bet.bet_on_home == home_won
         try:
