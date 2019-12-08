@@ -1,5 +1,20 @@
+<style>
+img {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+</style>
+
 <div>
-    <p><b>{{ game.away_team }}</b> @ <b> {{ game.home_team }}</b></p>
+    <table>
+        <tr>
+            <td><img src="/static/logos/{{ game.away_team }}.png" alt="{{ game.away_team }}" width="50" height="50"></td>
+            <td><p><b>{{ game.away_team }}</b> @ <b> {{ game.home_team }}</b></p></td>
+            <td><img src="/static/logos/{{game.home_team }}.png" alt="{{ game.home_team }}" width="50" height="50"></td>
+        </tr>
+    </table>
+    
     <br class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
     <form class="form" action="" method="post">
         <div class="form-row">
