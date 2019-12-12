@@ -35,7 +35,7 @@
     {% endfor %}
     {% if user_index.global %}
     <br>
-    {% with i=user_index.global, username=current_user.username, funds=current_user.ranking_funds %}
+    {% with i=user_index.global, user=current_user, funds=current_user.ranking_funds %}
         {% include "user_rank.html" %}
     {% endwith %}
     {% endif %}
@@ -48,7 +48,7 @@
     {% endfor %}
     {% if user_index.followed %}
     <br>
-    {% with i=user_index.followed, username=current_user.username, funds=current_user.ranking_funds %}
+    {% with i=user_index.followed, user=current_user, funds=current_user.ranking_funds %}
         {% include "user_rank.html" %}
     {% endwith %}
     {% endif %}
