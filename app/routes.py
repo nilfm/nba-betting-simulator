@@ -2,6 +2,7 @@
 
 import json
 from datetime import datetime, timedelta
+from pprint import pprint
 from app import app, db
 from app.forms import *
 from app.models import *
@@ -265,3 +266,15 @@ def users():
     ]
     params = sorted(params, key=custom_key)
     return jsonify(params)
+
+@app.route('/feed')
+@login_required
+def feed():
+    bets = Bet.query.order_by(Bet.date_time.desc()).all()
+    followed_bets = [b for b in bets if current_user.is_following(b.user)]
+    shown_bets = followed_bets[:app.config['NUM_BETS_FEED']]
+    days = sorted(set(b.game.date for b in shown_bets), reverse=True)
+    bets_days = [
+        {'day': day, 'bets': [b for b in shown_bets if b.game.date == day]} for day in days
+    ]
+    return render_template('feed.html', bets_days=bets_days)

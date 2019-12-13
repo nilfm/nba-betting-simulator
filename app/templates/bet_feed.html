@@ -1,0 +1,17 @@
+{% if bet.finished %}
+    {% if bet.won %}
+    <li class="list-group-item won-bet">
+    {% else %}
+    <li class="list-group-item lost-bet">
+    {% endif %}
+{% else %}
+    <li class="list-group-item pending-bet">
+{% endif %}
+        {{ bet.user.username }}: 
+        {{ bet.game.date }} - {{ bet.game.away_team }} @ {{ bet.game.home_team }} - {{ bet.amount }} coins on {{ bet.game.home_team if bet.bet_on_home else bet.game.away_team }}
+        {% if bet.finished %}
+        (balance: {{ bet.balance }})
+        {% else %}
+        (odds: {{ bet.odds }})
+        {% endif %}
+    </li>

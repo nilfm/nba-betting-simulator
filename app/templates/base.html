@@ -1,6 +1,48 @@
 {% block styles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <link rel="stylesheet" href="/static/css/style.css">
+<style>
+@media (max-width: 1000px) {
+  .navbar-header {
+      float: none;
+  }
+  .navbar-left,.navbar-right {
+      float: none !important;
+  }
+  .navbar-toggle {
+      display: block;
+  }
+  .navbar-collapse {
+      border-top: 1px solid transparent;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .navbar-fixed-top {
+      top: 0;
+      border-width: 0 0 1px;
+  }
+  .navbar-collapse.collapse {
+      display: none!important;
+  }
+  .navbar-nav {
+      float: none!important;
+      margin-top: 7.5px;
+
+      max-height: 300px;
+      overflow-y: scroll!important;
+  }
+  .navbar-nav>li {
+      float: none;
+  }
+  .navbar-nav>li>a {
+      padding-top: 10px;
+      padding-bottom: 10px;
+  }
+  .collapse.in{
+      display:block !important;
+  }
+
+}
+</style>
 {% endblock %}
 
 {% extends "bootstrap/base.html" %}
@@ -31,7 +73,10 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('ranking') }}">Ranking</a></li>
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('feed') }}">Feed</a></li>
                 </ul>
+                {% endif %}
                 {% if g.search_form %}
                 <form id="searchbox" class="navbar-form navbar-left" method="get" action="{{ url_for('search') }}">
                     <div class="form-group">
