@@ -239,7 +239,7 @@ class Bet(db.Model):
         self.odds = odds
         self.bet_on_home = bet_on_home
         self.finished = False
-        self.date_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        self.date_time = (datetime.utcnow() + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
         
     def finish(self, won):
         if self.finished:
