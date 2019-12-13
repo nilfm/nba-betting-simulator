@@ -105,6 +105,9 @@ class User(SearchableMixin, UserMixin, db.Model):
         return followed.union(me).order_by(User.ranking_funds.desc()).all()
 
     def place_bet(self, game, amount, bet_on_home):
+        # Avoid bets on games that have already started
+        if datetime.strptime(game.date_time, '%Y-%m-%d %H:%M:%S') < datetime.now() - timedelta(hours=8):
+            return False
         bet = Bet(
             user_id=self.id,
             game_id=game.id,
