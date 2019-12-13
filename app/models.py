@@ -225,7 +225,7 @@ class Bet(db.Model):
     amount = db.Column(db.Integer)
     odds = db.Column(db.Float)
     bet_on_home = db.Column(db.Boolean)
-    timestamp = db.Column(db.DateTime, index=True)
+    date_time = db.Column(db.String(40), index=True)
     won = db.Column(db.Boolean)
     balance = db.Column(db.Integer) # profits - amount bet (can be negative)
     finished = db.Column(db.Boolean)
@@ -239,7 +239,8 @@ class Bet(db.Model):
         self.odds = odds
         self.bet_on_home = bet_on_home
         self.finished = False
-
+        self.date_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        
     def finish(self, won):
         if self.finished:
             return

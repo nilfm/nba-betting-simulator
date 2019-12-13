@@ -20,3 +20,4 @@ class Config:
     ADMINS = ['nbabettingsimulator@gmail.com']
     NUM_BETS_SHOWN = 10
     NUM_RANKS_SHOWN = 10
+    NUM_BETS_FEED = 100

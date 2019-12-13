@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<div class="container-fluid">
+    <h1>Feed</h1>
+    {% for item in bets_days %}
+        {% with day = item.day, bets = item.bets %}
+            <hr>
+            <h3>{{ day }}</h3><br>
+            <ul class="list-group">
+            {% for bet in bets %}
+                {% include "bet_feed.html" %}
+            {% endfor %}
+            </ul>
+        {% endwith %}
+    {% endfor %}
+</div>
+{% endblock %}

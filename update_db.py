@@ -18,10 +18,15 @@ for bet in bets:
     odds = bet.game.home_odds if bet.bet_on_home else bet.game.away_odds
     bet.odds = odds
     db.session.commit()
-'''
 
 # Update api calls remaining
 ts = TimestampGames.query.all()
 for t in ts:
     t.api_remaining = 500
     db.session.commit()
+'''
+
+bets = Bet.query.all()
+for bet in bets:
+    bet.date_time = bet.game.date_time
+db.session.commit()
