@@ -3,6 +3,14 @@ from app.models import *
 
 '''
 # Update user's ranking funds
+users = User.query.all()
+for user in users:
+    amt = user.funds
+    bets = Bet.query.filter_by(user_id = user.id, finished=False).all()
+    for bet in bets:
+        amt += bet.amount
+    user.ranking_funds = amt
+    db.session.commit()
 
     
 # Update bet's odds
@@ -24,11 +32,3 @@ for bet in bets:
     bet.date_time = bet.game.date_time
 db.session.commit()
 '''
-users = User.query.all()
-for user in users:
-    amt = user.funds
-    bets = Bet.query.filter_by(user_id = user.id, finished=False).all()
-    for bet in bets:
-        amt += bet.amount
-    user.ranking_funds = amt
-    db.session.commit()
