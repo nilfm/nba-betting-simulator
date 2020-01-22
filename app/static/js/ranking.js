@@ -14,8 +14,9 @@ var ranking = new Vue({
         infiniteId: 0
     },
     methods: {
-        toggle_global: function() {
-            this.global = !this.global;
+        toggle: function(global) {
+            if (this.global == global) return;
+            this.global = global;
             this.shown_until = 10;
             const total = (this.global ? this.data.global : this.data.followed);
             this.shown_users = total.slice(0, this.shown_until); 
