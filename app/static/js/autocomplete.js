@@ -1,15 +1,12 @@
-$(document).ready(function(){	
-    $.ajax({
-        url: "/users",
-        async: true,
-        dataType: 'json',
-        success: function (data) {
-            //send parse data to autocomplete function
-            console.log(data);
-            loadSuggestions(data);
-        }
-    });
-    function loadSuggestions(options) {
+$(document).ready(function(){
+    fetch('/api/users')
+    .then((response) => {
+        return response.json();
+    })
+    .then((users_json) => {
+        load_suggestions(users_json);
+    })
+    function load_suggestions(options) {
         $('#autocomplete').autocomplete({
             triggerSelectOnValidInput: false,
             lookup: options,

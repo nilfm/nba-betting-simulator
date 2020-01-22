@@ -1,58 +1,61 @@
-<script>
-    function show_global(){
-        document.getElementById('global').classList.remove('hidden')
-        document.getElementById('followed').classList.add('hidden')
-    }
-    
-    function show_followed(){
-        document.getElementById('global').classList.add('hidden')
-        document.getElementById('followed').classList.remove('hidden')
-    }
-</script>
-
 {% extends "base.html" %}
 
 {% block app_content %}
     <h1>Ranking</h1>
     <hr>
-    {% if current_user.is_authenticated %}
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      <label class="btn btn-info active" onclick="show_global()">
-        <input type="radio" name="options" id="global-btn" autocomplete="off" checked>
-        Global
-      </label>
-      <label class="btn btn-info" onclick="show_followed()">
-        <input type="radio" name="options" id="followed-btn" autocomplete="off">
-        Followed
-      </label>
+    <div v-cloak v-if="loaded" id="ranking">
+        <div v-if="is_authenticated" class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-info active" v-on:click="toggle_global()">
+            <input type="radio" name="options" id="global-btn" autocomplete="off" checked>
+            Global
+          </label>
+          <label class="btn btn-info" v-on:click="toggle_global()">
+            <input type="radio" name="options" id="followed-btn" autocomplete="off">
+            Followed
+          </label>
+        </div>
+        <hr>     
+        <div v-if="is_authenticated">
+            <ul class="list-group">
+                <a v-for="(user, index) in shown_users" :key="index" :href='"/user/" + user.username' class="rank_link">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <% index+1 %> - <% user.username %>
+                        <span class="badge progress-bar-success badge-pill"><% user.ranking_funds %></span>
+                    </li>
+                </a>
+                <infinite-loading :identifier="infiniteId" @infinite="infiniteHandler">
+                    <div slot="no-more"></div>
+                    <div slot="no-results"></div>
+                </infinite-loading>
+                <div v-if="rank_current > shown_until">
+                    <br>
+                    <a :href='"/user/" + current_user.username' class="rank_link">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <% rank_current %> - <% current_user.username %>
+                            <span class="badge progress-bar-success badge-pill"><% current_user.ranking_funds %></span>
+                        </li>
+                    </a>
+                </div>
+            </ul>
+        </div>
+        <div v-else>
+            <ul class="list-group">
+                <li v-for="(user, index) in shown_users" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+                    <% index+1 %> - <% user.username %>
+                    <span class="badge progress-bar-success badge-pill"><% user.ranking_funds %></span>
+                </li>
+                <infinite-loading :identifier="infiniteId" @infinite="infiniteHandler">
+                    <div slot="no-more"></div>
+                    <div slot="no-results"></div>
+                </infinite-loading>
+            </ul>
+        </div>   
     </div>
-    <hr>
-    {% endif %}
-    
-    <ul class="list-group" id="global">
-    {% for i, user in ranking.global %}
-        {% include "user_rank.html" %}
-    {% endfor %}
-    {% if user_index.global %}
-    <br>
-    {% with i=user_index.global, user=current_user, funds=current_user.ranking_funds %}
-        {% include "user_rank.html" %}
-    {% endwith %}
-    {% endif %}
-    </ul>
-    
-    {% if current_user.is_authenticated %}
-    <ul class="list-group hidden" id="followed">
-    {% for i, user in ranking.followed %}
-        {% include "user_rank.html" %}
-    {% endfor %}
-    {% if user_index.followed %}
-    <br>
-    {% with i=user_index.followed, user=current_user, funds=current_user.ranking_funds %}
-        {% include "user_rank.html" %}
-    {% endwith %}
-    {% endif %}
-    </ul>
-    {% endif %}
 {% endblock %}
 
+
+{% block scripts %}
+    {{super()}}
+    <script src="https://unpkg.com/vue-infinite-loading@2.4.4/dist/vue-infinite-loading.js"></script>
+    <script src="/static/js/ranking.js"></script>
+{% endblock %}

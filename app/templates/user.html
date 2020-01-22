@@ -1,88 +1,110 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
-                <h2>{{ user.username }}'s bets</h2>
+    <div v-cloak v-if="loaded" id="user">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                    <h2><% data.username %>'s bets</h2>
+                </div>
+                <div v-if="!data.is_current" style="margin-top: 20px; margin-right: 10px;" align="right" class="center-block col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div v-if="!data.is_following">
+                        <a class="btn btn-primary" href="{{ url_for('follow', username=username) }}">
+                            Follow
+                        </a>
+                    </div>
+                    <div v-else>
+                        <a class="btn btn-primary" href="{{ url_for('unfollow', username=username) }}">
+                            Unfollow
+                        </a>
+                    </div>
+                </div>
             </div>
-            {% if not is_me %}
-            <div style="margin-top: 20px; margin-right: 10px;" align="right" class="center-block col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                {% if not is_following %}
-                <a class="btn btn-primary" href="{{ url_for('follow', username=user.username) }}">
-                    Follow
-                </a>
+        </div>
+        <hr>
+        <h3>Stats</h3>
+        <br>
+        <div class="container-fluid">
+            <ul class="list-group">
+                <li class="list-group-item won-bet">
+                    Won: <% data.stats.won %> <% 'bet' | pluralize(data.stats.won) %>
+                </li>
+                <li class="list-group-item lost-bet">
+                    Lost: <% data.stats.lost %> <% 'bet' | pluralize(data.stats.lost) %>
+                </li>
+                <li class="list-group-item pending-bet">
+                    Pending: <% data.stats.pending %> <% 'bet' | pluralize(data.stats.pending) %>
+                </li>
+            </ul>
+        </div>
+        <hr>    
+        <h3>Pending bets </h3>
+        <div class="container-fluid">
+            <div v-if="data.pending_bets.length != 0">
+                <ul class="list-group">
+                    <li v-for="bet in data.pending_bets" class="list-group-item pending-bet">
+                        <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
+                    </li>
+                </ul>
+            </div>
+            <div v-else>
+                <br>
+                <p>This user has no pending bets.</p>
+            </div>
+        </div>
+        <hr>
+        <h3>Finished bets</h3>
+        <div class="container-fluid">
+            <div v-if="shown_days.length != 0" v-for="day in shown_days">
+                <h3><% day.day %></h3><br>
+                <ul class="list-group">
+                    <li v-for="(bet in day.bets" class="list-group-item" :class="get_bet_class(bet)">
+                        <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
+                    </li>
+                </ul>
+            </div>
+            <infinite-loading @infinite="infiniteHandler">
+                <div slot="no-more"></div>
+                <div slot="no-results"></div>
+            </infinite-loading>
+            <div v-if="shown_days.length == 0">
+                <br>
+                <p>This user has no finished bets.</p>
+            </div>
+        </div>
+        <hr class="col-xs-12">
+    </div>
+    {% if username == current_user.username %}
+    <footer class="page-footer font-small pt-4 fixed-bottom">
+        <div class="container">
+            <div class="form-row">
+                <div align="left" id="reset-btn" class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <form action="/reset_account" method="post" onsubmit="return danger_warning()">
+                        <button class="btn btn-danger">Reset Account</button>
+                    </form>
+                </div>
+                {% if username != "nilfm" %}
+                <div align="right" id="delete-btn" class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <form action="/delete_account" method="post" onsubmit="return danger_warning()">
+                        <button class="btn btn-danger">Delete Account</button>
+                    </form>
+                </div>
                 {% else %}
-                <a class="btn btn-primary" href="{{ url_for('unfollow', username=user.username) }}">
-                    Unfollow
-                </a>
+                <div align="right" id="admin-btn" class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <form action="/admin" method="get">
+                        <button class="btn btn-primary">Admin</button>
+                    </form>
+                </div>
                 {% endif %}
             </div>
-            {% endif %}
         </div>
-    </div>
-    <hr>
-    <h3>Stats</h3>
-    <br>
-    <div class="container-fluid">
-        <ul class="list-group">
-            <li class="list-group-item won-bet">
-                Won {{ stats.won }} bet{% if stats.won != 1 %}s{% endif %} {% if stats.won+stats.lost != 0 %}({{ "%.2f"|format(100*stats.won/(stats.won+stats.lost)) }}%){% endif %}
-            </li>
-            <li class="list-group-item lost-bet">
-                Lost {{ stats.lost }} bet{% if stats.lost != 1 %}s{% endif %} {% if stats.won+stats.lost != 0 %}({{ "%.2f"|format(100*stats.lost/(stats.won+stats.lost)) }}%){% endif %}
-            </li>
-        </ul>
-    </div>
-    <hr>    
-    <h3>Pending bets{% if pending_bets %} ({{ stats.pending }}){% endif %}</h3>
-    <br>
-    <div class="container-fluid">
-    {% if pending_bets %}
-        <ul class="list-group">
-        {% for bet in pending_bets %}
-            {% include "bet.html" %}
-        {% endfor %}
-        </ul>
-    {% else %}
-    <p>This user has no pending bets.</p>
+    </footer>
     {% endif %}
-    </div>
-    <hr>
-    <h3>Recent finished bets</h3>
-    <br>
-    <div class="container-fluid">
-    {% if finished_bets %}
-        <ul class="list-group">
-        {% for bet in finished_bets %}
-            {% include "bet.html" %}
-        {% endfor %}
-        </ul>
-    {% else %}
-    <p>This user has no finished bets.</p>
-    {% endif %}
-    </div>
-    <hr class="col-xs-12">
-    {% if is_me %}
-    <div class="form-row">
-        <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
-            <form action="/reset_account" method="post" onsubmit="return danger_warning()">
-                <button class="btn btn-danger">Reset Account</button>
-            </form>
-        </div>
-        {% if user.username != "nilfm" %}
-        <div align="right" class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
-            <form action="/delete_account" method="post" onsubmit="return danger_warning()">
-                <button class="btn btn-danger">Delete Account</button>
-            </form>
-        </div>
-        {% else %}
-        <div align="right" class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
-            <form action="/admin" method="get">
-                <button class="btn btn-primary">Admin</button>
-            </form>
-        </div>
-        {% endif %}
-    </div>
-    {% endif %}
+{% endblock %}
+
+
+{% block scripts %}
+    {{super()}}
+    <script src="https://unpkg.com/vue-infinite-loading@2.4.4/dist/vue-infinite-loading.js"></script>
+    <script src="/static/js/user.js"></script>
 {% endblock %}

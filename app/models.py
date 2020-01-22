@@ -144,6 +144,15 @@ class User(SearchableMixin, UserMixin, db.Model):
         self.ranking_funds = int(amount)
         db.session.commit()
     
+    def to_dict(self):
+        user_dict = {
+            'id': self.id,
+            'username': self.username,
+            'funds': self.funds,
+            'ranking_funds': self.ranking_funds
+        }
+        return user_dict
+    
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))
@@ -257,6 +266,34 @@ class Bet(db.Model):
             self.balance = -self.amount
             self.user.change_ranking_balance(-self.amount)
         print(self)
+    
+    def to_dict(self):
+        bet_dict = {
+            'user_id': self.user_id,
+            'username': self.user.username,
+            'game_id': self.game.id,
+            'home_team': {
+                'short': self.game.home_team_long.short_name,
+                'long': self.game.home_team_long.long_name
+            },
+            'away_team': {
+                'short': self.game.away_team_long.short_name,
+                'long': self.game.away_team_long.long_name
+            },
+            'bet_for_team': {
+                'short': self.game.home_team_long.short_name if self.bet_on_home else self.game.away_team_long.short_name,
+                'long': self.game.home_team_long.long_name if self.bet_on_home else self.game.away_team_long.long_name,
+            },
+            'bet_on_home': self.bet_on_home,
+            'finished': self.finished,
+            'amount': self.amount,
+            'odds': self.odds,
+            'won': self.won,
+            'balance': self.balance,
+            'date_time': self.date_time,
+            'game_date': self.game.date
+        }
+        return bet_dict
     
     def __repr__(self):
         bet_for = "for the home team" if self.bet_on_home else "for the away team"
