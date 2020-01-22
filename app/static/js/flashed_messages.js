@@ -18,7 +18,7 @@ var flashed_messages = new Vue({
 })
 
 flashed_messages.get_flashed_messages();
-setInterval(flashed_messages.get_flashed_messages, 60000);
+//setInterval(flashed_messages.get_flashed_messages, 60000);
 
 
 
