@@ -18,9 +18,39 @@ img {
 body { 
     padding-top: 65px; 
 }
-.autocomplete-suggestions { position: fixed !important; border: 1px solid #999; background: #FFF; overflow: auto; }
+
+.user {
+    padding-bottom: 65px;
+}
+
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
 .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
 .autocomplete-selected { background: #F0F0F0; }
 .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
 .autocomplete-group { padding: 2px 5px;}
 .autocomplete-group strong { display: block; color: black; border-bottom: 1px solid #000; }
+[v-cloak] { display:none; }
+
+footer {
+    position: fixed;
+    height: 50px;
+    background-color: white;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
+}
+
+#reset-btn {
+    margin-top: 8px;
+}
+#delete-btn {
+    margin-top: 8px;
+}
+#admin-btn {
+    margin-top: 8px;
+}
+
+.rank_link {
+    color: rgba(0, 0, 0, 0.8) !important;    
+}

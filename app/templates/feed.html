@@ -1,18 +1,26 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<div class="container-fluid">
+<div v-cloak id="feed" class="container-fluid">
     <h1>Feed</h1>
-    {% for item in bets_days %}
-        {% with day = item.day, bets = item.bets %}
-            <hr>
-            <h3>{{ day }}</h3><br>
-            <ul class="list-group">
-            {% for bet in bets %}
-                {% include "bet_feed.html" %}
-            {% endfor %}
-            </ul>
-        {% endwith %}
-    {% endfor %}
+    <div v-if="shown_days[0]" v-if="loaded" v-for="day in shown_days">
+        <hr>
+        <h3><% day.day %></h3><br>
+        <ul class="list-group">
+            <li v-for="(bet in day.bets" class="list-group-item" :class="get_bet_class(bet)">
+                <% bet.username %>: <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
+            </li>
+        </ul>
+    </div>
+    <infinite-loading @infinite="infiniteHandler">
+        <div slot="no-more"></div>
+        <div slot="no-results"></div>
+    </infinite-loading>
 </div>
+{% endblock %}
+
+{% block scripts %}
+    {{super()}}
+    <script src="https://unpkg.com/vue-infinite-loading@2.4.4/dist/vue-infinite-loading.js"></script>
+    <script src="/static/js/feed.js"></script>
 {% endblock %}

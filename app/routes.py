@@ -7,7 +7,7 @@ from app import app, db
 from app.forms import *
 from app.models import *
 from app.email import *
-from flask import render_template, jsonify, flash, redirect, url_for, request, g
+from flask import get_flashed_messages, render_template, jsonify, flash, redirect, url_for, request, g
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 import subprocess
@@ -107,20 +107,7 @@ def reset_password(token):
 @app.route('/user/<username>')
 @login_required
 def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    bets = Bet.query.filter_by(user_id=user.id).all()
-    bets = sorted(bets, key=lambda b: datetime.strptime(b.game.date, '%Y-%m-%d'), reverse=True)
-    pending_bets = [bet for bet in bets if not bet.finished]
-    finished_bets = [bet for bet in bets if bet.finished]
-    num_won = sum(bet.won for bet in finished_bets)
-    stats = {
-        'won': num_won,
-        'lost': len(finished_bets) - num_won,
-        'pending': len(pending_bets) 
-    }
-    is_me = user.id == current_user.id
-    is_following = current_user.is_following(user)
-    return render_template("user.html", title=f"{username}'s profile", stats=stats, is_me=is_me, is_following=is_following, user=user, pending_bets=pending_bets, finished_bets=finished_bets[:app.config['NUM_BETS_SHOWN']])
+    return render_template("user.html", title=f"{username}'s profile", username=username)
 
 @app.route('/follow/<username>')
 @login_required
@@ -163,38 +150,7 @@ def proves():
 
 @app.route('/ranking')
 def ranking():
-    users = User.query.order_by(User.ranking_funds.desc()).all()
-    best_users = users[:app.config['NUM_RANKS_SHOWN']]
-    ranks = [(i, u) for i, u in enumerate(best_users, start=1)]
-
-
-    if current_user.is_authenticated:
-        followed = current_user.followed_users()
-        best_followed = followed[:app.config['NUM_RANKS_SHOWN']]
-        ranks_followed = [(i, u) for i, u in enumerate(best_followed, start=1)]
-        followed_index = followed.index(current_user) + 1
-        if followed_index <= app.config['NUM_RANKS_SHOWN']:
-            followed_index = None
-        user_index = users.index(current_user) + 1
-        if user_index <= app.config['NUM_RANKS_SHOWN']:
-            user_index = None
-            
-    else:
-        followed = None
-        best_followed = None
-        ranks_followed = None
-        followed_index = None
-        user_index = None
-    
-    ranking = {
-        'global': ranks,
-        'followed': ranks_followed
-    }
-    user_index = {
-        'global': user_index,
-        'followed': followed_index
-    }
-    return render_template('ranking.html', title='Ranking', ranking=ranking, user_index=user_index)
+    return render_template('ranking.html', title='Ranking')
 
 @app.route('/reset_account', methods=['POST'])
 @login_required
@@ -244,6 +200,15 @@ def search():
     users, total = User.search(g.search_form.q.data.lower(), 5)
     return render_template('search.html', title='Search', users=users, total=len(users))
 
+@app.route('/feed')
+@login_required
+def feed():
+    return render_template('feed.html', title='Feed')
+
+@app.route('/api/flashed_messages', methods=['GET'])
+def flashed_messages():
+    return jsonify([{'text': message} for message in get_flashed_messages()])
+
 def custom_key(x):
     mapping = {
         'Me': 0,
@@ -252,8 +217,8 @@ def custom_key(x):
     }
     return mapping[x['data']['category']], x['value']
 
-@app.route('/users', methods=['GET'])
-def users():
+@app.route('/api/users', methods=['GET'])
+def api_users():
     if not current_user.is_authenticated:
         return jsonify(None)
     users = User.query.all()
@@ -267,14 +232,66 @@ def users():
     params = sorted(params, key=custom_key)
     return jsonify(params)
 
-@app.route('/feed')
 @login_required
-def feed():
+@app.route('/api/user/<username>', methods=['GET'])
+def api_user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    bets = Bet.query.filter_by(user_id=user.id).all()
+    pending_bets = [bet for bet in bets if not bet.finished]
+    finished_bets = [bet for bet in bets if bet.finished]
+    days = sorted(set(bet.game.date for bet in finished_bets), reverse=True)
+    num_won = sum(bet.won for bet in finished_bets)
+    stats = {
+        'won': num_won,
+        'lost': len(finished_bets) - num_won,
+        'pending': len(pending_bets) 
+    }
+    data = {
+        'is_following': current_user.is_following(user),
+        'is_current': current_user.id == user.id,
+        'stats': stats,
+        'pending_bets': [bet.to_dict() for bet in pending_bets],
+        'finished_bets': [{'day': day, 'bets': [bet.to_dict() for bet in finished_bets if bet.game.date == day]} for day in days],
+    }
+    data.update(user.to_dict())
+    return jsonify(data)
+        
+@app.route('/api/current_user', methods=['GET'])
+def api_current_user():
+    data = {
+        'is_authenticated': current_user.is_authenticated,
+        'data': None if not current_user.is_authenticated else current_user.to_dict()
+    }
+    return jsonify(data)
+
+@app.route('/api/feed', methods=['GET'])
+@login_required
+def api_feed():
     bets = Bet.query.order_by(Bet.date_time.desc()).all()
     followed_bets = [b for b in bets if current_user.is_following(b.user)]
-    shown_bets = followed_bets[:app.config['NUM_BETS_FEED']]
-    days = sorted(set(b.game.date for b in shown_bets), reverse=True)
+    days = sorted(set(b.game.date for b in followed_bets), reverse=True)
     bets_days = [
-        {'day': day, 'bets': [b for b in shown_bets if b.game.date == day]} for day in days
+        {'day': day, 'bets': [b.to_dict() for b in followed_bets if b.game.date == day]} for day in days
     ]
-    return render_template('feed.html', bets_days=bets_days)
+    return jsonify(bets_days);
+
+
+@app.route('/api/ranking', methods=['GET'])
+def api_ranking():
+    users = User.query.order_by(User.ranking_funds.desc()).all()
+    users = [u.to_dict() for u in users]
+    
+    followed = None
+    if current_user.is_authenticated:
+        followed = current_user.followed_users()
+        followed = [u.to_dict() for u in followed]
+    
+    ranking = {
+        'global': users,
+        'followed': followed,
+        'is_authenticated': current_user.is_authenticated,
+        'username': None if not current_user.is_authenticated else current_user.username,
+        'ranking_funds': None if not current_user.is_authenticated else current_user.ranking_funds
+    }
+
+    return jsonify(ranking)
