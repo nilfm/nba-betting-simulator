@@ -57,6 +57,10 @@ var ranking = new Vue({
                         })
                     })
         },
+        get_ranking_class: function(username, current_username) {
+            if (username == current_username) return "current-user-ranking";
+            else return "other-user-ranking";
+        },
         infiniteHandler: function ($state) {
             const total = (this.global ? this.data.global : this.data.followed);
             const limit = total.length;
