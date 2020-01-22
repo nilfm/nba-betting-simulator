@@ -18,7 +18,7 @@ var user = new Vue({
                 .then((user_json) => {
                     this.data = user_json;
                     this.loaded = true;
-                    this.shown_until = 1;
+                    this.shown_until = 10;
                     this.shown_days = this.data.finished_bets.slice(0, this.shown_until);
                 })
         },
