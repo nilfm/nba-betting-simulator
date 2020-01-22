@@ -15,7 +15,7 @@ var feed = new Vue({
                 .then((bets_json) => {
                     this.data = bets_json;
                     this.loaded = true;
-                    this.shown_until = 1;
+                    this.shown_until = 10;
                     this.shown_days = this.data.slice(0, this.shown_until);
                 })
         },
