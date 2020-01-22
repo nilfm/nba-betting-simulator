@@ -89,7 +89,6 @@ footer {
       margin-top: 7.5px;
 
       max-height: 300px;
-      overflow-y: scroll!important;
   }
   .navbar-nav>li {
       float: none;
