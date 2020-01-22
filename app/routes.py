@@ -289,9 +289,6 @@ def api_ranking():
     ranking = {
         'global': users,
         'followed': followed,
-        'is_authenticated': current_user.is_authenticated,
-        'username': None if not current_user.is_authenticated else current_user.username,
-        'ranking_funds': None if not current_user.is_authenticated else current_user.ranking_funds
     }
 
     return jsonify(ranking)

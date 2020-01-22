@@ -39,15 +39,23 @@ var ranking = new Vue({
                     this.loaded = true;
                     this.shown_until = 10;
                     this.shown_users = this.data.global.slice(0, this.shown_until);
-                    this.is_authenticated = ranking_json.is_authenticated;
-                    if (this.is_authenticated) {
-                        this.current_user.username = ranking_json.username;
-                        this.current_user.ranking_funds = ranking_json.ranking_funds;
-                        this.rank_followed = this.find(this.data.followed, this.username) + 1;
-                        this.rank_global = this.find(this.data.global, this.username) + 1;
-                        this.rank_current = this.rank_global;
-                    }
                 })
+                .then(() => {
+                    fetch('/api/current_user')
+                        .then((response) => {
+                            return response.json();
+                        })
+                        .then((user_json) => {
+                            this.is_authenticated = user_json.is_authenticated;
+                            if (this.is_authenticated) {
+                                this.current_user.username = user_json.data.username;
+                                this.current_user.ranking_funds = user_json.data.ranking_funds;
+                                this.rank_followed = this.find(this.data.followed, this.current_user.username) + 1;
+                                this.rank_global = this.find(this.data.global, this.current_user.username) + 1;
+                                this.rank_current = this.rank_global;
+                            }
+                        })
+                    })
         },
         infiniteHandler: function ($state) {
             const total = (this.global ? this.data.global : this.data.followed);
