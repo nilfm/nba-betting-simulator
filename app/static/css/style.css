@@ -51,6 +51,14 @@ footer {
     margin-top: 8px;
 }
 
-.rank_link {
+.rank-link {
     color: rgba(0, 0, 0, 0.8) !important;    
+}
+
+.current-user-ranking {
+    background-color: #C9DBF0;
+}
+
+.other-user-ranking {
+    background-color: #FFF;
 }
