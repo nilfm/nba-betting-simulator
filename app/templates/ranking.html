@@ -5,11 +5,11 @@
     <hr>
     <div v-cloak v-if="loaded" id="ranking">
         <div v-if="is_authenticated" class="btn-group btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-info active" v-on:click="toggle_global()">
+          <label class="btn btn-info active" v-on:click="toggle(true)">
             <input type="radio" name="options" id="global-btn" autocomplete="off" checked>
             Global
           </label>
-          <label class="btn btn-info" v-on:click="toggle_global()">
+          <label class="btn btn-info" v-on:click="toggle(false)">
             <input type="radio" name="options" id="followed-btn" autocomplete="off">
             Followed
           </label>
