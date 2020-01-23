@@ -15,6 +15,7 @@ img {
 .pending-bet {
 
 }
+
 body { 
     padding-top: 65px; 
 }
@@ -29,7 +30,7 @@ body {
 .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
 .autocomplete-group { padding: 2px 5px;}
 .autocomplete-group strong { display: block; color: black; border-bottom: 1px solid #000; }
-[v-cloak] { display:none; }
+[v-cloak] { display:none !important; }
 
 footer {
     position: fixed;
