@@ -1,5 +1,6 @@
 {% block styles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-toast-notification/dist/index.css">
 <style>
 img {
     margin-left: 20px;
@@ -106,6 +107,7 @@ footer {
 .rank-link {
     color: rgba(0, 0, 0, 0.8) !important;    
 }
+
 </style>
 {% endblock %}
 
@@ -160,11 +162,18 @@ footer {
 
 {% block content %}
     <div class="container">
-        <div v-cloak id="flashed">
-            <div v-cloak v-for="message in messages" class="alert alert-info" role="alert">
-                <% message.text %>
-            </div>
+        <div id="notifications"></div>
+        
+        <div id="flashed_messages">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-info" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         </div>
+        
         {% block app_content %}
         {% endblock %}
     </div>
@@ -175,8 +184,11 @@ footer {
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.1/axios.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.2.27/jquery.autocomplete.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-toast-notification"></script>
     <script src="/static/js/autocomplete.js"></script>
     <script src="/static/js/warning.js"></script>
-    <script src="/static/js/flashed_messages.js"></script>
     <script src="/static/js/current_user.js"></script>
+    <script src="/static/js/notifications.js"></script>
 {% endblock %}
+

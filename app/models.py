@@ -104,10 +104,29 @@ class User(SearchableMixin, UserMixin, db.Model):
         me = User.query.filter_by(id=self.id)
         return followed.union(me).order_by(User.ranking_funds.desc()).all()
 
-    def place_bet(self, game, amount, bet_on_home):
+    def place_bet(self, game_id, amount, bet_on_home):
         # Avoid bets on games that have already started
+        game = Game.query.filter_by(id=game_id).first()
+        if (game is None):
+            return {
+                'success': False,
+                'msg': "This game doesn't exist"
+            }
         if datetime.strptime(game.date_time, '%Y-%m-%d %H:%M:%S') < datetime.now() - timedelta(hours=8):
-            return False
+            return {
+                'success': False,
+                'msg': "This game already started"
+            }
+        if amount > self.funds:
+            return {
+                'success': False,
+                'msg': f"You only have {self.funds} coins"
+            }
+        if amount <= 0:
+            return {
+                'success': False,
+                'msg': "The bet amount has to be positive"
+            }
         bet = Bet(
             user_id=self.id,
             game_id=game.id,
@@ -119,10 +138,16 @@ class User(SearchableMixin, UserMixin, db.Model):
             db.session.add(bet)
             db.session.commit()
             self.change_balance(-amount)
-            return True
+            team_name = game.home_team if bet_on_home else game.away_team
+            return {
+                'success': True,
+                'msg': f"You have successfully bet {amount} coins on {team_name}"
+            }
         except IntegrityError as e:
-            db.session.rollback()
-            return False
+            return {
+                'success': False,
+                'msg': "You have already bet on this game"
+            }
                 
     def change_balance(self, amount):
         if (self.funds + amount < 0):
@@ -221,6 +246,28 @@ class Game(db.Model):
         self.away_score = away_score
         self.winner = 1 if home_score > away_score else 2
         print(self)
+    
+    def to_dict(self):
+        game_dict = {
+            'game_id': self.id,
+            'home_team': {
+                'short': self.home_team_long.short_name,
+                'long': self.home_team_long.long_name,
+                'odds': self.home_odds,
+                'score': self.away_score
+            },
+            'away_team': {
+                'short': self.away_team_long.short_name,
+                'long': self.away_team_long.long_name,
+                'odds': self.away_odds,
+                'score': self.away_score
+            },
+            'finished': self.finished,
+            'winner': self.winner,
+            'date_time': self.date_time,
+            'date': self.date
+        }
+        return game_dict
     
     def __repr__(self):
         if self.winner is None:
