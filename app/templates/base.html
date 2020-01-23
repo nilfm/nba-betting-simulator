@@ -1,6 +1,7 @@
 {% block styles %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<style>
+<link rel="stylesheet" type="text/css" href="/static/css/style.css">
+<!--<style>
 img {
     margin-left: 20px;
     margin-right: 20px;
@@ -107,11 +108,13 @@ footer {
     color: rgba(0, 0, 0, 0.8) !important;    
 }
 </style>
+-->
 {% endblock %}
 
 {% extends "bootstrap/base.html" %}
 
 {% block head %}
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>
     {% if title %}
