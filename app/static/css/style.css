@@ -51,10 +51,6 @@ footer {
     margin-top: 8px;
 }
 
-.rank-link {
-    color: rgba(0, 0, 0, 0.8) !important;    
-}
-
 .current-user-ranking {
     background-color: #C9DBF0;
 }
@@ -102,3 +98,8 @@ footer {
   }
 
 }
+
+.rank-link {
+    color: rgba(0, 0, 0, 0.8) !important;    
+}
+
