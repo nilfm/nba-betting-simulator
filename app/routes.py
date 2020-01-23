@@ -7,7 +7,7 @@ from app import app, db
 from app.forms import *
 from app.models import *
 from app.email import *
-from flask import get_flashed_messages, render_template, jsonify, flash, redirect, url_for, request, g
+from flask import render_template, jsonify, flash, redirect, url_for, request, g
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 import subprocess
@@ -18,30 +18,8 @@ import subprocess
 def index():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    TODAY = (datetime.now()-timedelta(hours=8)).strftime('%Y-%m-%d')
-    games = Game.query.filter_by(date=TODAY).all()
-    already_bet_home = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=True).first() is not None for g in games]
-    already_bet_away = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=False).first() is not None for g in games]
-    # Filter out games that have already started, need to filter out already_bet_X too
-    not_started = [(game, b1, b2) for game, b1, b2 in zip(games, already_bet_home, already_bet_away) if datetime.strptime(game.date_time, '%Y-%m-%d %H:%M:%S') > datetime.now() - timedelta(hours=8)]
-    # zip(*x) is the inverse of zip
-    if not_started:
-        games, already_bet_home, already_bet_away = zip(*not_started)
-    
-    forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
-    games_forms = list(zip(games, forms[::2], forms[1::2], already_bet_home, already_bet_away))
-    for game, form1, form2, _, _ in games_forms:
-        for i, form in enumerate([form1, form2]):
-            if form.submit.data and form.validate_on_submit():
-                bet_on_home = (i == 0)
-                correct_bet = current_user.place_bet(game, form.amount.data, bet_on_home)
-                if (correct_bet):
-                    flash(f"You have successfully bet {form.amount.data} coin{'s' if form.amount.data != 1 else ''} on {game.home_team if bet_on_home else game.away_team}. You now have {current_user.funds} coin{'s' if current_user.funds != 1 else ''}.")
-                else:
-                    flash('There was an error processing your bet.')
-                return redirect(url_for('index'))
 
-    return render_template('index.html', games_forms=games_forms, date=TODAY)
+    return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -139,15 +117,6 @@ def unfollow(username):
     flash(f'You are no longer following {username}.')
     return redirect(url_for('user', username=username))
 
-@app.route('/proves', methods=['GET', 'POST'])
-@login_required
-def proves():
-    TODAY = (datetime.now()-timedelta(hours=8)).strftime('%Y-%m-%d')
-    games = Game.query.filter_by(date=TODAY).all()
-    forms = [BetForm(prefix=str(i)) for i in range(len(games)*2)]
-    games_forms = list(zip(games, forms[::2], forms[1::2]))
-    return render_template('prova.html', games_forms=games_forms, date=TODAY)
-
 @app.route('/ranking')
 def ranking():
     return render_template('ranking.html', title='Ranking')
@@ -204,10 +173,6 @@ def search():
 @login_required
 def feed():
     return render_template('feed.html', title='Feed')
-
-@app.route('/api/flashed_messages', methods=['GET'])
-def flashed_messages():
-    return jsonify([{'text': message} for message in get_flashed_messages()])
 
 def custom_key(x):
     mapping = {
@@ -292,3 +257,56 @@ def api_ranking():
     }
 
     return jsonify(ranking)
+
+@app.route('/api/games', methods=['GET'])
+@login_required
+def api_games_today():
+    TODAY = (datetime.utcnow()-timedelta(hours=8)).strftime('%Y-%m-%d')
+    games = Game.query.filter_by(date=TODAY).all()
+    already_bet_home = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=True).first() is not None for g in games]
+    already_bet_away = [Bet.query.filter_by(game_id=g.id, user_id=current_user.id, bet_on_home=False).first() is not None for g in games]
+    games = [g.to_dict() for g in games]
+    for game, home, away in zip(games, already_bet_home, already_bet_away):
+        game['already_bet_home'] = home
+        game['already_bet_away'] = away
+    return jsonify(games)
+
+
+'''
+Expected data:
+{
+    'game_id': INTEGER,
+    'bet_on_home': BOOLEAN,
+    'amount': INTEGER
+}
+where:
+    -game_id is a valid game id for a game that hasn't started
+    -amount is between 1 and current funds 
+    -the user has not yet bet on this team for this game
+    
+Returns:
+{
+    'success': BOOLEAN,
+    'msg': STRING
+}    
+where:
+    -success is true if the bet has been placed successfully
+    -msg is one of:
+        -"You have successfully bet X coins on Y [team]"
+        -"This game already started"
+        -"This game doesn't exist"
+        -"The bet amount has to be positive"
+        -"You only have X coins"
+        -"You have already bet on this game"
+'''
+@app.route('/api/place_bet', methods=['POST'])
+@login_required
+def api_place_bet():
+    data = json.loads(request.get_data())
+    response = current_user.place_bet(
+        data['game_id'],
+        data['amount'],
+        data['bet_on_home']
+    )
+    return jsonify(response)
+    

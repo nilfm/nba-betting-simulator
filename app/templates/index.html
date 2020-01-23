@@ -2,11 +2,72 @@
 
 {% block app_content %}
 <body>
-    <h1>Today's games</h1><hr><h2>{{ date }}</h2><hr>
-    <div class="container-fluid">
-    {% for game, form1, form2, already1, already2 in games_forms %}
-        {% include "game.html" %}
-    {% endfor %}
+    <div v-cloak v-if="loaded"  id="games">
+        <h1>Today's games</h1><hr><h2><% current_date %></h2><hr>
+        <div class="container-fluid">
+            <div v-for="game in shown_games">
+                <table>
+                    <tr>
+                        <td><img :src="'/static/logos/' + game.away_team.short + '.png'" :alt="game.away_team.long" width="50" height="50"></td>
+                        <td><p><b><% game.away_team.short %></b> @ <b><% game.home_team.short %></b></p></td>
+                        <td><img :src="'/static/logos/' + game.home_team.short + '.png'" :alt="game.home_team.long" width="50" height="50"></td>
+                    </tr>
+                </table>
+                <br class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <!-- HOME TEAM -->
+                <form class="form" v-on:submit.prevent="place_bet(game.game_id, true)">
+                    <div class="form-row">
+                        <div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-9">
+                            <b><% game.home_team.long %></b>
+                        </div>
+                        <div class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <p><% game.home_team.odds %></p>
+                        </div>
+                        <div class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-9">
+                            <input class="form-control" :id="'amount-home-' + game.game_id" type="number" placeholder="Amount">
+                        </div>
+                        <div v-if="game.already_bet_home" class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                            <input class="btn btn-primary" type="submit" value="Bet" disabled>
+                        </div>
+                        <div v-else class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                            <input class="btn btn-primary" type="submit" value="Bet"> <!-- TODO: place_bet, validate_input -->
+                        </div>
+                    </div>
+                </form>
+                <!-- AWAY TEAM -->
+                <form class="form" v-on:submit.prevent="place_bet(game.game_id, false)">
+                    <div class="form-row">
+                        <div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-9">
+                            <b><% game.away_team.long %></b>
+                        </div>
+                        <div class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <p><% game.away_team.odds %></p>
+                        </div>
+                        <div class="form-group col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-9">
+                            <input class="form-control" :id="'amount-away-' + game.game_id" type="number" placeholder="Amount">
+                        </div>
+                        <div v-if="game.already_bet_away" class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                            <input class="btn btn-primary" type="submit" value="Bet" disabled>
+                        </div>
+                        <div v-else class="form-group col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-3">
+                            <input class="btn btn-primary" type="submit" value="Bet"> <!-- TODO: place_bet, validate_input -->
+                        </div>
+                    </div>
+                </form>
+                
+                
+                <hr class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            </div>
+        </div>
     </div>
 </body>
 {% endblock %}
+
+{% block scripts %}
+    {{super()}}
+    <script src="/static/js/games.js"></script>
+{% endblock %}
+
+
+
+
