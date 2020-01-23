@@ -36,6 +36,12 @@ var games = new Vue({
             value = parseInt(value_str);
             return value;
         },
+        clear_amount: function(game_id, bet_on_home) {
+            home_or_away = bet_on_home ? 'home' : 'away';
+            amount_id = 'amount-' + home_or_away + '-' + game_id;
+            document.getElementById(amount_id).value = '';
+            console.log(document.getElementById(amount_id).value);
+        },
         validate_bet: function(value) {
             if (value <= 0) notifications.add_error('The bet amount has to be positive');
             else if (value > current_user.data.funds) notifications.add_error('You only have ' + current_user.data.funds + ' coins'); 
@@ -44,7 +50,10 @@ var games = new Vue({
         },
         place_bet: function(game_id, bet_on_home) {
             amount = this.get_amount(game_id, bet_on_home);
-            if (!this.validate_bet(amount)) return;
+            if (!this.validate_bet(amount)) {
+                this.clear_amount(game_id, bet_on_home);
+                return;
+            }
             payload = {
                 'game_id': game_id,
                 'bet_on_home': bet_on_home,
@@ -67,6 +76,7 @@ var games = new Vue({
                     else {
                         notifications.add_error(resp.msg);    
                     }
+                    this.clear_amount(game_id, bet_on_home);
                 });
         },
         set_already_bet: function(game_id, bet_on_home) {
