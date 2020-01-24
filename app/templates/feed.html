@@ -6,11 +6,21 @@
     <div v-if="shown_days[0]" v-if="loaded" v-for="day in shown_days">
         <hr>
         <h3><% day.day %></h3><br>
-        <ul class="list-group">
-            <li v-for="(bet in day.bets" class="list-group-item" :class="get_bet_class(bet)">
-                <% bet.username %>: <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
-            </li>
-        </ul>
+        <div v-for="game in day.games">
+            <table>
+                <tr>
+                    <td><img :src="'/static/logos/' + game.info.away_team.short + '.png'" :alt="game.info.away_team.long" width="50" height="50"></td>
+                    <td><p><b><% game.info.away_team.short %></b> @ <b><% game.info.home_team.short %></b></p></td>
+                    <td><img :src="'/static/logos/' + game.info.home_team.short + '.png'" :alt="game.info.home_team.long" width="50" height="50"></td>
+                </tr>
+            </table>
+            <ul class="list-group">
+                <li v-for="bet in game.bets" class="list-group-item" :class="get_bet_class(bet)">
+                    <% bet.username %>: <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
+                </li>
+            </ul>
+            <br>
+        </div>
     </div>
     <infinite-loading @infinite="infiniteHandler">
         <div slot="no-more"></div>
