@@ -104,7 +104,7 @@ var games = new Vue({
     },
     computed: {
         current_date: function() {
-            return this.get_current_timestamp().format('DD/MM/YYYY');
+            return this.get_current_timestamp().format('YYYY-MM-DD');
         }
     }
 })
