@@ -87,36 +87,6 @@ def reset_password(token):
 def user(username):
     return render_template("user.html", title=f"{username}'s profile", username=username)
 
-@app.route('/follow/<username>')
-@login_required
-def follow(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        flash(f'User {username} not found.')
-        return redirect(url_for('index'))
-    if user == current_user:
-        flash('You cannot follow yourself!')
-        return redirect(url_for('user', username=username))
-    current_user.follow(user)
-    db.session.commit()
-    flash(f'You are now following {username}!')
-    return redirect(url_for('user', username=username))
-
-@app.route('/unfollow/<username>')
-@login_required
-def unfollow(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        flash(f'User {username} not found.')
-        return redirect(url_for('index'))
-    if user == current_user:
-        flash('You cannot unfollow yourself!')
-        return redirect(url_for('user', username=username))
-    current_user.unfollow(user)
-    db.session.commit()
-    flash(f'You are no longer following {username}.')
-    return redirect(url_for('user', username=username))
-
 @app.route('/ranking')
 def ranking():
     return render_template('ranking.html', title='Ranking')
@@ -309,4 +279,51 @@ def api_place_bet():
         data['bet_on_home']
     )
     return jsonify(response)
+
+'''
+Expected data: None
+
+Returns:
+{
+    'success': BOOLEAN,
+    'msg': STRING
+}    
+where:
+    -success is true if the user has been followed successfully
+    -msg is one of:
+        -"You are now following X
+        -"User not found"
+        -"You cannot follow yourself"
+        -"You were already following X"
+'''
+@app.route('/api/follow/<username>', methods=['POST'])
+@login_required
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    response = current_user.follow(user)
+    return jsonify(response)
+
+'''
+Expected data: None
+
+Returns:
+{
+    'success': BOOLEAN,
+    'msg': STRING
+}    
+where:
+    -success is true if the user has been unfollowed successfully
+    -msg is one of:
+        -"You are no longer following X
+        -"User not found"
+        -"You cannot unfollow yourself"
+        -"You were already not following X"
+'''
+@app.route('/api/unfollow/<username>', methods=['POST'])
+@login_required
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    response = current_user.unfollow(user)
+    return jsonify(response)
     
+
