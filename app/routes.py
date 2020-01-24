@@ -199,6 +199,9 @@ def api_current_user():
     }
     return jsonify(data)
 
+'''
+Returns a list of days which each has a list of games which each has a list of bets on that game
+'''
 @app.route('/api/feed', methods=['GET'])
 @login_required
 def api_feed():
@@ -206,8 +209,25 @@ def api_feed():
     followed_bets = [b for b in bets if current_user.is_following(b.user)]
     days = sorted(set(b.game.date for b in followed_bets), reverse=True)
     bets_days = [
-        {'day': day, 'bets': [b.to_dict() for b in followed_bets if b.game.date == day]} for day in days
+        {
+        'day': day, 
+        'games': 
+            {
+                b.game_id:
+                {'info': b.game.to_dict(),
+                'bets': 
+                    [
+                        e.to_dict() 
+                        for e in followed_bets 
+                        if e.game.date == day and e.game_id == b.game_id
+                    ]
+                } 
+                for b in followed_bets if b.game.date == day
+             }
+        } 
+        for day in days
     ]
+    print(bets_days)
     return jsonify(bets_days);
 
 
