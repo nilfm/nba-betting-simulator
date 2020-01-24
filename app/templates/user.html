@@ -9,12 +9,12 @@
                 </div>
                 <div v-if="!data.is_current" style="margin-top: 20px; margin-right: 10px;" align="right" class="center-block col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
                     <div v-if="!data.is_following">
-                        <a class="btn btn-primary" href="{{ url_for('follow', username=username) }}">
+                        <a class="btn btn-primary" v-on:click.prevent="follow()">
                             Follow
                         </a>
                     </div>
                     <div v-else>
-                        <a class="btn btn-primary" href="{{ url_for('unfollow', username=username) }}">
+                        <a class="btn btn-primary" v-on:click.prevent="unfollow()">
                             Unfollow
                         </a>
                     </div>

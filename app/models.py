@@ -88,12 +88,53 @@ class User(SearchableMixin, UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def follow(self, user):
+        if user is None:
+            return {
+                'success': False,
+                'msg': 'User not found'
+            }
+        if user == self:
+            return {
+                'success': False,
+                'msg': 'You cannot follow yourself'
+            }
         if not self.is_following(user):
             self.followed.append(user)
+            db.session.commit()
+            return {
+                'success': True,
+                'msg': f'You are now following {user.username}'
+            }
+        else:
+            return {
+                'success': False,
+                'msg': f'You were already following {user.username}'
+            }
             
     def unfollow(self, user):
+        if user is None:
+            return {
+                'success': False,
+                'msg': 'User not found'
+            }
+        if user == self:
+            return {
+                'success': False,
+                'msg': 'You cannot follow yourself'
+            }
         if self.is_following(user):
             self.followed.remove(user)
+            db.session.commit()
+            return {
+                'success': True,
+                'msg': f'You are no longer following {user.username}'
+            }
+        else:
+            return {
+                'success': False,
+                'msg': f'You were already not following {user.username}'
+            }
+
             
     def is_following(self, user):
         return self.followed.filter(followers.c.followed_id == user.id).count() > 0
