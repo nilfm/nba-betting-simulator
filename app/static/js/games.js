@@ -26,7 +26,12 @@ var games = new Vue({
             return moment.utc().subtract('8', 'hour');
         },
         not_started: function(game) {
-            return game.start_timestamp > this.get_current_timestamp();
+            // Ignore timezones in comparison!
+            game_start = game.start_timestamp.format('YYYY-MM-DD HH:mm:ss');
+            console.log(game_start);
+            now = this.get_current_timestamp().format('YYYY-MM-DD HH:mm:ss');
+            console.log(now);
+            return game_start > this.get_current_timestamp();
         },
         get_amount: function(game_id, bet_on_home) {
             home_or_away = bet_on_home ? 'home' : 'away';
