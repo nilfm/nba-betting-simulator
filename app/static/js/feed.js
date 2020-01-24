@@ -1,22 +1,37 @@
+const PAGE_SIZE = 3;
+// Is true when all data has been loaded
+complete = false;
+
 var feed = new Vue({
     el: '#feed',
     delimiters: ['<%', '%>'],
     data: {
         loaded: false,
+        shown_until: 0,
         shown_days: [],
-        data: []
     },
     methods: {
         get_feed_info: function() {
-            fetch('/api/feed')
+            let current_size = this.shown_days.length;
+            fetch('/api/feed?page=' + this.shown_until)
                 .then((response) => {
                     return response.json();
                 })
                 .then((bets_json) => {
-                    this.data = bets_json;
-                    this.loaded = true;
-                    this.shown_until = 10;
-                    this.shown_days = this.data.slice(0, this.shown_until);
+                    // Check if another request has already completed for this page
+                    if (this.shown_days.length != current_size) return false;
+                    if (bets_json.success) {
+                        let days = bets_json.data;
+                        this.loaded = true;
+                        for (let i = 0; i < PAGE_SIZE && i < days.length; i++) {
+                            this.shown_until++;
+                            this.shown_days.push(days[i]);
+                        }
+                    }
+                    else {
+                        notifications.add_error(bets_json.msg);
+                    }
+                    complete = bets_json.complete;
                 })
         },
         get_bet_class: function(bet) {
@@ -25,16 +40,15 @@ var feed = new Vue({
             else return "lost-bet";
         },
         infiniteHandler: function ($state) {
-            if (this.shown_until >= this.data.length) {
-                $state.complete();
-            }
-            else {
-                setTimeout(() => {
-                    this.shown_days.push(this.data[this.shown_until]);
-                    this.shown_until++;
+            setTimeout(() => {
+                this.get_feed_info();
+                if (complete) {
+                    $state.complete();
+                }
+                else {
                     $state.loaded();
-                }, 500);   
-            }
+                }
+            }, 1000);   
         }
     },
     filters: {
