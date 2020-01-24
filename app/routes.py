@@ -190,7 +190,7 @@ def api_user(username):
     }
     data.update(user.to_dict())
     return jsonify(data)
-        
+
 @app.route('/api/current_user', methods=['GET'])
 def api_current_user():
     data = {
@@ -200,11 +200,18 @@ def api_current_user():
     return jsonify(data)
 
 '''
-Returns a list of days which each has a list of games which each has a list of bets on that game
+Returns an object with:
+    -success: BOOLEAN
+    -msg: STRING
+    -complete: BOOLEAN
+    -data: Array of days, each with an array of games, each with an array of bets
 '''
 @app.route('/api/feed', methods=['GET'])
 @login_required
 def api_feed():
+    page = int(request.args.get('page', 0))
+    print(page)
+    page_length = 3
     bets = Bet.query.order_by(Bet.date_time.desc()).all()
     followed_bets = [b for b in bets if current_user.is_following(b.user)]
     days = sorted(set(b.game.date for b in followed_bets), reverse=True)
@@ -227,8 +234,14 @@ def api_feed():
         } 
         for day in days
     ]
-    print(bets_days)
-    return jsonify(bets_days);
+    days_in_page = bets_days[page : page+page_length]
+    response = {
+        'success': True,
+        'complete': page + page_length >= len(bets_days),
+        'msg': "OK",
+        'data': days_in_page
+    }
+    return jsonify(response);
 
 
 @app.route('/api/ranking', methods=['GET'])
@@ -260,7 +273,6 @@ def api_games_today():
         game['already_bet_home'] = home
         game['already_bet_away'] = away
     return jsonify(games)
-
 
 '''
 Expected data:

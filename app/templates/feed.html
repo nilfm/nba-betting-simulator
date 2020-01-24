@@ -22,7 +22,7 @@
             <br>
         </div>
     </div>
-    <infinite-loading @infinite="infiniteHandler">
+    <infinite-loading v-if="shown_until>0" :distance="10" @infinite="infiniteHandler">
         <div slot="no-more"></div>
         <div slot="no-results"></div>
     </infinite-loading>
