@@ -28,9 +28,7 @@ var games = new Vue({
         not_started: function(game) {
             // Ignore timezones in comparison!
             game_start = game.start_timestamp.format('YYYY-MM-DD HH:mm:ss');
-            console.log(game_start);
             now = this.get_current_timestamp().format('YYYY-MM-DD HH:mm:ss');
-            console.log(now);
             return game_start > now;
         },
         get_amount: function(game_id, bet_on_home) {
