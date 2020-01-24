@@ -31,7 +31,7 @@ var games = new Vue({
             console.log(game_start);
             now = this.get_current_timestamp().format('YYYY-MM-DD HH:mm:ss');
             console.log(now);
-            return game_start > this.get_current_timestamp();
+            return game_start > now;
         },
         get_amount: function(game_id, bet_on_home) {
             home_or_away = bet_on_home ? 'home' : 'away';
