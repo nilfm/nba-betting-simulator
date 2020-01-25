@@ -169,8 +169,8 @@ def api_users():
     params = sorted(params, key=custom_key)
     return jsonify(params)
 
-@login_required
 @app.route('/api/user/<username>', methods=['GET'])
+@login_required
 def api_user(username):
     user = User.query.filter_by(username=username).first_or_404()
     bets = Bet.query.filter_by(user_id=user.id).all()
