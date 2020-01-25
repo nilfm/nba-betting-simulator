@@ -1,7 +1,7 @@
 raw
 odds
 scores
-app.db
+**.db
 __pycache__
 app/__pycache__
 .env
