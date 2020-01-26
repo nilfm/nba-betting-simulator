@@ -1,7 +1,7 @@
 const PAGE_SIZE = 3;
 // Is true when all data has been loaded
 complete = false;
-last_requested = -1;
+last_requested_bets = -1;
 
 var user = new Vue({
     el: '#user',
@@ -32,7 +32,7 @@ var user = new Vue({
         },
         get_bets_info: function(current_size) {
             // Another request is already serving this data
-            last_requested = this.shown_days.length;
+            last_requested_bets = this.shown_days.length;
             let url_split = window.location.pathname.split('/');
             let username = url_split[url_split.length-1];
             let endpoint = '/api/user/' + username + '/bets?page=' + this.shown_until;
@@ -41,7 +41,7 @@ var user = new Vue({
                     return response.json();
                 })
                 .then((bets_json) => {
-                    if (this.shown_until != last_requested) return false;
+                    if (this.shown_until != last_requested_bets) return false;
                     if (bets_json.success) {
                         let days = bets_json.data;
                         for (let i = 0; i < PAGE_SIZE && i < days.length; i++) {
@@ -100,7 +100,7 @@ var user = new Vue({
         infiniteHandler: function ($state) {
             let current = this.shown_until;
             setTimeout(() => {
-                if (last_requested < current) {
+                if (last_requested_bets < current) {
                     this.get_bets_info(this.shown_until);
                 }
                 if (complete) {
