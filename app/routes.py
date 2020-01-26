@@ -222,9 +222,18 @@ Returns an object with:
 @login_required
 def api_user_bets(username):
     # Get URL argument
-    page = int(request.args.get('page', 0))
-    page_length = 3
-    
+    try:
+        page = int(request.args.get('page', 0))
+        page_length = 3
+    except ValueError:
+        response = {
+            'success': False,
+            'complete': True,
+            'msg': 'Bad request: missing necessary fields',
+            'data': {}
+        }
+        return jsonify(response)
+        
     user = User.query.filter_by(username=username).first_or_404()
     finished_bets = Bet.query.filter_by(user_id=user.id, finished=True).all()
 
@@ -258,8 +267,18 @@ Returns an object with:
 @app.route('/api/feed', methods=['GET'])
 @login_required
 def api_feed():
-    page = int(request.args.get('page', 0))
-    page_length = 3
+    try:
+        page = int(request.args.get('page', 0))
+        page_length = 3
+    except ValueError:
+        response = {
+            'success': False,
+            'complete': True,
+            'msg': 'Bad request: missing necessary fields',
+            'data': {}
+        }
+        return jsonify(response)
+        
     bets = Bet.query.order_by(Bet.date_time.desc()).all()
     followed_bets = [b for b in bets if current_user.is_following(b.user)]
     days = sorted(set(b.game.date for b in followed_bets), reverse=True)
@@ -300,8 +319,18 @@ Returns an object with:
 '''
 @app.route('/api/ranking/global', methods=['GET'])
 def api_ranking_global():
-    page = int(request.args.get('page', 0))
-    page_length = 10
+    try:
+        page = int(request.args.get('page', 0))
+        page_length = 10
+    except ValueError:
+        response = {
+            'success': False,
+            'complete': True,
+            'msg': 'Bad request: missing necessary fields',
+            'data': {}
+        }
+        return jsonify(response)
+        
     
     users = User.query.order_by(User.ranking_funds.desc()).all()
     users = [u.to_dict() for u in users]
@@ -335,8 +364,17 @@ def api_ranking_followed():
         }
         return jsonify(response)
     
-    page = int(request.args.get('page', 0))
-    page_length = 10
+    try:
+        page = int(request.args.get('page', 0))
+        page_length = 10
+    except ValueError:
+        response = {
+            'success': False,
+            'complete': True,
+            'msg': 'Bad request: missing necessary fields',
+            'data': {}
+        }
+        return jsonify(response)
     
     followed = current_user.followed_users()
     followed = [u.to_dict() for u in followed]
