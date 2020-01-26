@@ -10,7 +10,7 @@
             <p><b><% game.info.away_team.short %></b> @ <b><% game.info.home_team.short %></b></p>
             <ul class="list-group">
                 <li v-for="bet in game.bets" class="list-group-item" :class="get_bet_class(bet)">
-                    <% bet.username %>: <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
+                    <% bet.username %>: <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
                 </li>
             </ul>
             <br>
