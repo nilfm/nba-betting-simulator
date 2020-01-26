@@ -43,7 +43,6 @@ var games = new Vue({
             home_or_away = bet_on_home ? 'home' : 'away';
             amount_id = 'amount-' + home_or_away + '-' + game_id;
             document.getElementById(amount_id).value = '';
-            console.log(document.getElementById(amount_id).value);
         },
         validate_bet: function(value) {
             if (value <= 0) notifications.add_error('The bet amount has to be positive');

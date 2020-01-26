@@ -169,6 +169,23 @@ def api_users():
     params = sorted(params, key=custom_key)
     return jsonify(params)
 
+'''
+Returns:
+    -User as a dictionary, which contains:
+        -id
+        -username
+        -funds
+        -ranking_funds
+    -Information about current user and this user:
+        -is_following
+        -is_current
+    -List of stats, which contains:
+        -number of won bets
+        -number of lost bets
+        -number of pending bets
+        -number of finished bets (won+lost)
+    -List of pending bets
+'''
 @app.route('/api/user/<username>', methods=['GET'])
 @login_required
 def api_user(username):
@@ -176,22 +193,52 @@ def api_user(username):
     bets = Bet.query.filter_by(user_id=user.id).all()
     pending_bets = [bet for bet in bets if not bet.finished]
     finished_bets = [bet for bet in bets if bet.finished]
-    days = sorted(set(bet.game.date for bet in finished_bets), reverse=True)
+    num_finished = len(finished_bets)
+    num_pending = len(pending_bets)
     num_won = sum(bet.won for bet in finished_bets)
-    stats = {
-        'won': num_won,
-        'lost': len(finished_bets) - num_won,
-        'pending': len(pending_bets) 
-    }
     data = {
         'is_following': current_user.is_following(user),
         'is_current': current_user.id == user.id,
-        'stats': stats,
+        'stats': 
+            {
+            'finished': num_finished,
+            'won': num_won,
+            'lost': num_finished - num_won,
+            'pending': num_pending 
+            },
         'pending_bets': [bet.to_dict() for bet in pending_bets],
-        'finished_bets': [{'day': day, 'bets': [bet.to_dict() for bet in finished_bets if bet.game.date == day]} for day in days],
     }
     data.update(user.to_dict())
     return jsonify(data)
+
+'''
+Returns an object with:
+    -success: BOOLEAN
+    -msg: STRING
+    -complete: BOOLEAN
+    -data: Array of days, each with an array of bets
+'''
+@app.route('/api/user/<username>/bets')
+@login_required
+def api_user_bets(username):
+    # Get URL argument
+    page = int(request.args.get('page', 0))
+    page_length = 3
+    
+    user = User.query.filter_by(username=username).first_or_404()
+    finished_bets = Bet.query.filter_by(user_id=user.id, finished=True).all()
+
+    days = sorted(set(bet.game.date for bet in finished_bets), reverse=True)
+    bets_days = [{'day': day, 'bets': [bet.to_dict() for bet in finished_bets if bet.game.date == day]} for day in days]
+    days_in_page = bets_days[page : page+page_length]
+    response = {
+        'success': True,
+        'complete': page + page_length >= len(bets_days),
+        'msg': "OK",
+        'data': days_in_page
+    }
+    return response
+
 
 @app.route('/api/current_user', methods=['GET'])
 def api_current_user():
@@ -212,7 +259,6 @@ Returns an object with:
 @login_required
 def api_feed():
     page = int(request.args.get('page', 0))
-    print(page)
     page_length = 3
     bets = Bet.query.order_by(Bet.date_time.desc()).all()
     followed_bets = [b for b in bets if current_user.is_following(b.user)]
@@ -302,11 +348,17 @@ where:
         -"The bet amount has to be positive"
         -"You only have X coins"
         -"You have already bet on this game"
+        -"Bad request: missing necessary fields"
 '''
 @app.route('/api/place_bet', methods=['POST'])
 @login_required
 def api_place_bet():
     data = json.loads(request.get_data())
+    if ('game_id' not in data or 'amount' not in data or 'bet_on_home' not in data):
+        return {
+            'success': False,
+            'msg': 'Bad request: missing necessary fields'
+        }
     response = current_user.place_bet(
         data['game_id'],
         data['amount'],
