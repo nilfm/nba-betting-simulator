@@ -8,9 +8,7 @@ var games = new Vue({
     },
     methods: {
         chronological_comparison: function(g1, g2) {
-            g1_start = g1.start_timestamp.format('YYYY-MM-DD HH:mm:ss');
-            g2_start = g2.start_timestamp.format('YYYY-MM-DD HH:mm:ss');
-            return g1_start < g2_start;
+            return g1.date_time < g2.date_time;
         },
         get_games_info: function() {
             fetch('/api/games')
