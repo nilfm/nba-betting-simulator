@@ -1,6 +1,7 @@
 const PAGE_SIZE = 3;
 // Is true when all data has been loaded
 complete = false;
+last_requested = -1;
 
 var feed = new Vue({
     el: '#feed',
@@ -12,14 +13,14 @@ var feed = new Vue({
     },
     methods: {
         get_feed_info: function() {
-            let current_size = this.shown_days.length;
+            last_requested = this.shown_days.length;
             fetch('/api/feed?page=' + this.shown_until)
                 .then((response) => {
                     return response.json();
                 })
                 .then((bets_json) => {
                     // Check if another request has already completed for this page
-                    if (this.shown_days.length != current_size) return false;
+                    if (this.shown_until != last_requested) return false;
                     if (bets_json.success) {
                         let days = bets_json.data;
                         this.loaded = true;
@@ -40,8 +41,11 @@ var feed = new Vue({
             else return "lost-bet";
         },
         infiniteHandler: function ($state) {
+            let current = this.shown_until;
             setTimeout(() => {
-                this.get_feed_info();
+                if (last_requested < current) {
+                    this.get_feed_info();
+                }
                 if (complete) {
                     $state.complete();
                 }
