@@ -8,8 +8,8 @@ var games = new Vue({
     },
     methods: {
         chronological_comparison: function(g1, g2) {
-            if (g1.date_time < g2.date_time) return 1;
-            if (g1.date_time > g2.date_time) return -1;
+            if (g1.date_time < g2.date_time) return -1;
+            if (g1.date_time > g2.date_time) return 1;
             return 0;
         },
         get_games_info: function() {
