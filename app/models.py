@@ -295,7 +295,7 @@ class Game(db.Model):
                 'short': self.home_team_long.short_name,
                 'long': self.home_team_long.long_name,
                 'odds': self.home_odds,
-                'score': self.away_score
+                'score': self.home_score
             },
             'away_team': {
                 'short': self.away_team_long.short_name,
