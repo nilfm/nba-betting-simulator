@@ -32,7 +32,7 @@ var user = new Vue({
         },
         get_bets_info: function(current_size) {
             // Another request is already serving this data
-            last_requested_bets = this.shown_days.length;
+            last_requested_bets = this.shown_until;
             let url_split = window.location.pathname.split('/');
             let username = url_split[url_split.length-1];
             let endpoint = '/api/user/' + username + '/bets?page=' + this.shown_until;
@@ -109,7 +109,7 @@ var user = new Vue({
                 else {
                     $state.loaded();
                 }
-            }, 1000);   
+            }, 500);   
         }
     },
     filters: {

@@ -13,7 +13,7 @@ var feed = new Vue({
     },
     methods: {
         get_feed_info: function() {
-            last_requested_feed = this.shown_days.length;
+            last_requested_feed = this.shown_until;
             fetch('/api/feed?page=' + this.shown_until)
                 .then((response) => {
                     return response.json();
@@ -52,7 +52,7 @@ var feed = new Vue({
                 else {
                     $state.loaded();
                 }
-            }, 1000);   
+            }, 500);   
         }
     },
     filters: {
