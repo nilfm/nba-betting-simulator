@@ -62,6 +62,7 @@
                         <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
                     </li>
                 </ul>
+                <br>
             </div>
             <infinite-loading @infinite="infiniteHandler">
                 <div slot="no-more"></div>
