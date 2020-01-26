@@ -291,23 +291,97 @@ def api_feed():
     }
     return jsonify(response);
 
-
-@app.route('/api/ranking', methods=['GET'])
-def api_ranking():
+'''
+Returns an object with:
+    -success: BOOLEAN
+    -msg: STRING
+    -complete: BOOLEAN
+    -data: Dictionary that contains an array of names
+'''
+@app.route('/api/ranking/global', methods=['GET'])
+def api_ranking_global():
+    page = int(request.args.get('page', 0))
+    page_length = 10
+    
     users = User.query.order_by(User.ranking_funds.desc()).all()
     users = [u.to_dict() for u in users]
+    users_page = users[page : page+page_length]
     
-    followed = None
-    if current_user.is_authenticated:
-        followed = current_user.followed_users()
-        followed = [u.to_dict() for u in followed]
-    
-    ranking = {
-        'global': users,
-        'followed': followed,
+    response = {
+        'success': True,
+        'msg': 'OK',
+        'complete': page + page_length >= len(users),
+        'data': {
+            'ranking': users_page,
+        }
     }
+    return jsonify(response)
 
-    return jsonify(ranking)
+'''
+Returns an object with:
+    -success: BOOLEAN
+    -msg: STRING
+    -complete: BOOLEAN
+    -data: Dictionary that contains an array of names
+'''
+@app.route('/api/ranking/followed', methods=['GET'])
+def api_ranking_followed():
+    if not current_user.is_authenticated:
+        response = {
+            'success': False,
+            'msg': 'Current user is not authenticated',
+            'complete': True,
+            'data': {}
+        }
+        return jsonify(response)
+    
+    page = int(request.args.get('page', 0))
+    page_length = 10
+    
+    followed = current_user.followed_users()
+    followed = [u.to_dict() for u in followed]
+    followed_page = followed[page : page+page_length]
+    
+    response = {
+        'success': True,
+        'msg': 'OK',
+        'complete': page + page_length >= len(followed),
+        'data': {
+            'ranking': followed_page,
+        }
+    }
+    return jsonify(response)
+
+@app.route('/api/current_rank', methods=['GET'])
+def api_current_rank():
+    if not current_user.is_authenticated:
+        response = {
+            'rank_global': -1,
+            'rank_followed': -1
+        }
+        return jsonify(response)
+        
+    users = User.query.order_by(User.ranking_funds.desc()).all()
+    followed = current_user.followed_users()
+    
+    rank_global = -1
+    for i, user in enumerate(users, start=1):
+        if user.id == current_user.id:
+            rank_global = i
+            break
+            
+
+    rank_followed = -1
+    for i, user in enumerate(followed, start=1):
+        if user.id == current_user.id:
+            rank_followed = i
+            break
+    
+    response = {
+        'rank_global': rank_global,
+        'rank_followed': rank_followed
+    }
+    return jsonify(response)
 
 @app.route('/api/games', methods=['GET'])
 @login_required
