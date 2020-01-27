@@ -10,6 +10,8 @@ The website is available <a href="http://nbabettingsimulator.com">here</a>.
 
 * Python (Flask) for the backend
 * Javascript and VueJS for the frontend
+* Elasticsearch to search users (fuzzy search and prefix search)
+* Deployed on DigitalOcean droplet (Linux server)
 
 ### Ideas
 
