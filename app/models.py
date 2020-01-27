@@ -297,13 +297,17 @@ class Game(db.Model):
                 'short': self.home_team_long.short_name,
                 'long': self.home_team_long.long_name,
                 'odds': self.home_odds,
-                'score': self.home_score
+                'score': self.home_score,
+                'wins': self.home_team_long.wins,
+                'losses': self.home_team_long.losses,
             },
             'away_team': {
                 'short': self.away_team_long.short_name,
                 'long': self.away_team_long.long_name,
                 'odds': self.away_odds,
-                'score': self.away_score
+                'score': self.away_score,
+                'wins': self.away_team_long.wins,
+                'losses': self.away_team_long.losses,
             },
             'finished': self.finished,
             'winner': self.winner,
