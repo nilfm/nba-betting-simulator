@@ -21,6 +21,8 @@ TODAY['datetime_file'] = datetime.now().strftime('%Y-%m-%d')
 TODAY['url'] = f'https://www.cbssports.com/nba/scoreboard/{TODAY["datetime_url"]}/'
 TODAY['scores_file_path'] = f'scores_{TODAY["datetime_file"]}.txt'
 
+RECORDS_URL = 'https://www.cbssports.com/nba/standings/'
+
 SCORES_DIR = 'scores'
 TEAMS_FILE_PATH = 'teams.json'
 
@@ -29,6 +31,13 @@ def shorten_team(name):
         teams = json.load(infile)
         
     shortened = {t['simple_name'] : t['short_name'] for t in teams}
+    return shortened[name]
+
+def shorten_team_records(name):
+    with open(TEAMS_FILE_PATH, 'r') as infile:
+        teams = json.load(infile)
+        
+    shortened = {t['records_name'] : t['short_name'] for t in teams}
     return shortened[name]
 
 def get_scores(day):
@@ -104,13 +113,39 @@ def save_timestamp():
     db.session.add(t)
     db.session.commit()
 
+def get_records():
+    records = {}
+    page = requests.get(RECORDS_URL)
+    soup = BeautifulSoup(page.text, 'html.parser')
+    table = soup.findAll("tr", {"class": "TableBase-bodyTr"})
+    for tr in table:
+        name = tr.findAll("span", {"class": "TeamName"})[0].string
+        tds = tr.findAll("td", {"class": "TableBase-bodyTd--number"})
+        short_name = shorten_team_records(name)
+        records[short_name] = {
+            'wins': int(tds[0].string.strip()),
+            'losses': int(tds[1].string.strip()),
+        }
+    return records
+
+def write_records_to_db(records):
+    for team, record in records.items():
+        t = Team.query.filter_by(short_name = team).first()
+        t.wins = record['wins']
+        t.losses = record['losses']
+        db.session.add(t)
+    db.session.commit()
+
 def main():
     with app.app_context():
+        records = get_records()
+        write_records_to_db(records)
         for day in YESTERDAY, TODAY:
             scores = get_scores(day)
             write_scores_to_file(day, scores)
             write_to_db(day, scores)
         save_timestamp()
+
 
 if __name__ == '__main__':
     main()

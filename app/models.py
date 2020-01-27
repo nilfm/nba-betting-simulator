@@ -245,9 +245,11 @@ class Team(db.Model):
     
     short_name = db.Column(db.String(3), primary_key=True)
     long_name = db.Column(db.String(50), unique=True)
+    wins = db.Column(db.Integer)
+    losses = db.Column(db.Integer)
     
     def __repr__(self):
-        return f"<{self.short_name} - {self.long_name}>"
+        return f"<{self.short_name} - {self.long_name} - {self.wins} wins - {self.losses} losses>"
 
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -329,6 +331,7 @@ class Bet(db.Model):
     won = db.Column(db.Boolean)
     balance = db.Column(db.Integer) # profits - amount bet (can be negative)
     finished = db.Column(db.Boolean)
+    timestamp = db.Column(db.DateTime) # cannot remove columns
 
     db.UniqueConstraint(user_id, game_id, bet_on_home)
     

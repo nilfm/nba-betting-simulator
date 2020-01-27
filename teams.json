@@ -3,180 +3,210 @@
     "short_name": "ATL",
     "team_name": "Atlanta Hawks",
     "simple_name": "Hawks",
+    "records_name": "Atlanta",
     "location": "Atlanta"
   },
   {
     "short_name": "BOS",
     "team_name": "Boston Celtics",
     "simple_name": "Celtics",
+    "records_name": "Boston",
     "location": "Boston"
   },
   {
     "short_name": "BKN",
     "team_name": "Brooklyn Nets",
     "simple_name": "Nets",
+    "records_name": "Brooklyn",
     "location": "Brooklyn"
   },
   {
     "short_name": "CHA",
     "team_name": "Charlotte Hornets",
     "simple_name": "Hornets",
+    "records_name": "Charlotte",
     "location": "Charlotte"
   },
   {
     "short_name": "CHI",
     "team_name": "Chicago Bulls",
     "simple_name": "Bulls",
+    "records_name": "Chicago",
     "location": "Chicago"
   },
   {
     "short_name": "CLE",
     "team_name": "Cleveland Cavaliers",
     "simple_name": "Cavaliers",
+    "records_name": "Cleveland",
     "location": "Cleveland"
   },
   {
     "short_name": "DAL",
     "team_name": "Dallas Mavericks",
     "simple_name": "Mavericks",
+    "records_name": "Dallas",
     "location": "Dallas"
   },
   {
     "short_name": "DEN",
     "team_name": "Denver Nuggets",
     "simple_name": "Nuggets",
+    "records_name": "Denver",
     "location": "Denver"
   },
   {
     "short_name": "DET",
     "team_name": "Detroit Pistons",
     "simple_name": "Pistons",
+    "records_name": "Detroit",
     "location": "Detroit"
   },
   {
     "short_name": "GSW",
     "team_name": "Golden State Warriors",
     "simple_name": "Warriors",
+    "records_name": "Golden St.",
     "location": "Golden State"
   },
   {
     "short_name": "HOU",
     "team_name": "Houston Rockets",
     "simple_name": "Rockets",
+    "records_name": "Houston",
     "location": "Houston"
   },
   {
     "short_name": "IND",
     "team_name": "Indiana Pacers",
     "simple_name": "Pacers",
+    "records_name": "Indiana",
     "location": "Indiana"
   },
   {
     "short_name": "LAC",
     "team_name": "Los Angeles Clippers",
     "simple_name": "Clippers",
+    "records_name": "L.A. Clippers",
     "location": "Los Angeles"
   },
   {
     "short_name": "LAL",
     "team_name": "Los Angeles Lakers",
     "simple_name": "Lakers",
+    "records_name": "L.A. Lakers",
     "location": "Los Angeles"
   },
   {
     "short_name": "MEM",
     "team_name": "Memphis Grizzlies",
     "simple_name": "Grizzlies",
+    "records_name": "Memphis",
     "location": "Memphis"
   },
   {
     "short_name": "MIA",
     "team_name": "Miami Heat",
     "simple_name": "Heat",
+    "records_name": "Miami",
     "location": "Miami"
   },
   {
     "short_name": "MIL",
     "team_name": "Milwaukee Bucks",
     "simple_name": "Bucks",
+    "records_name": "Milwaukee",
     "location": "Milwaukee"
   },
   {
     "short_name": "MIN",
     "team_name": "Minnesota Timberwolves",
     "simple_name": "Timberwolves",
+    "records_name": "Minnesota",
     "location": "Minnesota"
   },
   {
     "short_name": "NOP",
     "team_name": "New Orleans Pelicans",
     "simple_name": "Pelicans",
+    "records_name": "New Orleans",
     "location": "New Orleans"
   },
   {
     "short_name": "NYK",
     "team_name": "New York Knicks",
     "simple_name": "Knicks",
+    "records_name": "New York",
     "location": "New York"
   },
   {
     "short_name": "OKC",
     "team_name": "Oklahoma City Thunder",
     "simple_name": "Thunder",
+    "records_name": "Oklahoma City",
     "location": "Oklahoma City"
   },
   {
     "short_name": "ORL",
     "team_name": "Orlando Magic",
     "simple_name": "Magic",
+    "records_name": "Orlando",
     "location": "Orlando"
   },
   {
     "short_name": "PHI",
     "team_name": "Philadelphia 76ers",
     "simple_name": "76ers",
+    "records_name": "Philadelphia",
     "location": "Philadelphia"
   },
   {
     "short_name": "PHX",
     "team_name": "Phoenix Suns",
     "simple_name": "Suns",
+    "records_name": "Phoenix",
     "location": "Phoenix"
   },
   {
     "short_name": "POR",
     "team_name": "Portland Trail Blazers",
     "simple_name": "Trail Blazers",
+    "records_name": "Portland",
     "location": "Portland"
   },
   {
     "short_name": "SAC",
     "team_name": "Sacramento Kings",
     "simple_name": "Kings",
+    "records_name": "Sacramento",
     "location": "Sacramento"
   },
   {
     "short_name": "SAS",
     "team_name": "San Antonio Spurs",
     "simple_name": "Spurs",
+    "records_name": "San Antonio",
     "location": "San Antonio"
   },
   {
     "short_name": "TOR",
     "team_name": "Toronto Raptors",
     "simple_name": "Raptors",
+    "records_name": "Toronto",
     "location": "Toronto"
   },
   {
     "short_name": "UTA",
     "team_name": "Utah Jazz",
     "simple_name": "Jazz",
+    "records_name": "Utah",
     "location": "Utah"
   },
   {
     "short_name": "WAS",
     "team_name": "Washington Wizards",
     "simple_name": "Wizards",
+    "records_name": "Washington",
     "location": "Washington"
   }
 ]
