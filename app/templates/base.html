@@ -140,6 +140,7 @@ footer {
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('ranking') }}">Ranking</a></li>
                     <li v-if="is_authenticated"><a href="{{ url_for('feed') }}">Feed</a></li>
+                    <li v-if="!is_authenticated"><a href="{{ url_for('explained') }}">What is this?</a></li>
                 </ul>
                 {% if g.search_form %}
                 <form id="searchbox" class="navbar-form navbar-left" method="get" action="{{ url_for('search') }}">

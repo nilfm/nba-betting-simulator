@@ -21,6 +21,10 @@ def index():
 
     return render_template('index.html')
 
+@app.route('/explained')
+def explained():
+    return render_template('explained.html', title='What is this?')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
