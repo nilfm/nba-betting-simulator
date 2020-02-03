@@ -45,6 +45,8 @@ var user = new Vue({
                     if (bets_json.success) {
                         let days = bets_json.data;
                         for (let i = 0; i < PAGE_SIZE && i < days.length; i++) {
+                            days[i].balance = this.calculate_balance(days[i]);
+                            days[i].display_balance = this.calculate_display_balance(days[i].balance);
                             this.shown_until++;
                             this.shown_days.push(days[i]);
                         }
@@ -58,6 +60,21 @@ var user = new Vue({
         get_bet_class: function(bet) {
             if (bet.won) return "won-bet";
             else return "lost-bet";
+        },
+        calculate_balance: function(day) {
+            let balance = 0;
+            for (let i = 0; i < day.bets.length; i++) {
+                let bet = day.bets[i];
+                if (bet.finished) {
+                    if (bet.won) balance += Math.floor(bet.amount*(bet.odds-1));
+                    else balance -= bet.amount;
+                }
+            }
+            return balance;
+        },
+        calculate_display_balance: function(balance) {
+            if (balance <= 0) return balance.toString();
+            else return '+' + balance;
         },
         follow: function() {
             let endpoint = '/api/follow/' + this.data.username;

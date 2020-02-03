@@ -44,7 +44,7 @@
             <div v-if="data.pending_bets.length != 0">
                 <ul class="list-group">
                     <li v-for="bet in data.pending_bets" class="list-group-item pending-bet">
-                        <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
+                        <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %>  <% 'coin' | pluralize(bet.amount) %> on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
                     </li>
                 </ul>
             </div>
@@ -56,7 +56,7 @@
         <h3>Finished bets</h3>
         <div class="container-fluid">
             <div v-if="shown_days.length != 0" v-for="day in shown_days">
-                <h3><% day.day %></h3><br>
+                <h3><% day.day %> (<% day.display_balance %>  <% 'coin' | pluralize(day.balance) %>)</h3><br>
                 <ul class="list-group">
                     <li v-for="(bet in day.bets" class="list-group-item" :class="get_bet_class(bet)">
                         <% bet.away_team.short %> @ <% bet.home_team.short %> - <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
