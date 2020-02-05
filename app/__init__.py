@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from app.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -11,6 +11,7 @@ from logging.handlers import SMTPHandler, RotatingFileHandler
 from elasticsearch import Elasticsearch
 
 app = Flask(__name__)
+api = Blueprint('api', __name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -47,4 +48,8 @@ if not app.debug:
     app.logger.info('NBA Betting Simulator')
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
-from app import routes, models
+from app import routes, api_routes, models
+app.register_blueprint(api, url_prefix='/api')
+
+for rule in app.url_map.iter_rules():
+    print(rule)

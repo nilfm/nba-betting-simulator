@@ -37,6 +37,9 @@ body {
 [v-cloak] { display:none !important; }
 
 footer {
+    border-top-width: thin;
+    border-top-color: lightgray;
+    border-top-style: solid;    
     position: fixed;
     height: 50px;
     background-color: white;
@@ -136,7 +139,7 @@ footer {
                 </button>
                 <a class="navbar-brand" href="{{ url_for('index') }}">NBA Betting Simulator</a>
             </div>
-            <div  class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('ranking') }}">Ranking</a></li>
                     <li v-if="is_authenticated"><a href="{{ url_for('feed') }}">Feed</a></li>
