@@ -10,9 +10,11 @@
             <p v-if="game.info.finished"><b><% game.info.away_team.short %></b> (<% game.info.away_team.score %>) @ (<% game.info.home_team.score %>) <b><% game.info.home_team.short %></b></p>
             <p v-else><b><% game.info.away_team.short %></b> @ <b><% game.info.home_team.short %></b></p>
             <ul class="list-group">
-                <li v-for="bet in game.bets" class="list-group-item" :class="get_bet_class(bet)">
-                    <% bet.username %>: <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
-                </li>
+                <a v-for="bet in game.bets" class="rank-link" :href='"/user/" + bet.username'>
+                    <li class="list-group-item" :class="get_bet_class(bet)">
+                        <% bet.username %>: <% bet.amount %> coins on <% bet.bet_for_team.short %> (odds: <% bet.odds %>)
+                    </li>
+                </a>
             </ul>
             <br>
         </div>
