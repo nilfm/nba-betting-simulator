@@ -51,5 +51,3 @@ if not app.debug:
 from app import routes, api_routes, models
 app.register_blueprint(api, url_prefix='/api')
 
-for rule in app.url_map.iter_rules():
-    print(rule)
