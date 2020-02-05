@@ -1,11 +1,10 @@
 raw
 odds
 scores
-**.db
-__pycache__
-app/__pycache__
 .env
 logs
 my_env
-**.pyc
 .vscode
+**.db
+**.pyc
+**/__pycache__
