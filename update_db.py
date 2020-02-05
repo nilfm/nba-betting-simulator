@@ -1,7 +1,7 @@
 from app import db
 from app.models import *
 
-'''
+"""
 # Update user's ranking funds
 users = User.query.all()
 for user in users:
@@ -31,4 +31,4 @@ bets = Bet.query.all()
 for bet in bets:
     bet.date_time = bet.game.date_time
 db.session.commit()
-'''
+"""
