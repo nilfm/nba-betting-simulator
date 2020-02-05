@@ -3,7 +3,8 @@ var current_user = new Vue({
     delimiters: ['<%', '%>'],
     data: {
         is_authenticated: false,
-        data: {}
+        data: {},
+        loaded: false,
     },
     methods: {
         get_current_user_info: function() {
@@ -13,7 +14,8 @@ var current_user = new Vue({
                 })
                 .then((user_json) => {
                     this.data = user_json.data;
-                    this.is_authenticated = user_json.is_authenticated
+                    this.is_authenticated = user_json.is_authenticated;
+                    this.loaded = true;
                 })
         }
     }

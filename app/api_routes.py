@@ -3,11 +3,9 @@
 import json
 from datetime import datetime, timedelta
 from app import app, db, api
-from app.forms import *
 from app.models import *
-from app.email import *
-from flask import render_template, jsonify, flash, redirect, url_for, request, g
-from flask_login import current_user, login_user, logout_user, login_required
+from flask import jsonify, request
+from flask_login import current_user, login_required
 
 
 def custom_key(x):
@@ -260,6 +258,7 @@ def api_ranking_global():
 
 
 @api.route("/ranking/followed", methods=["GET"])
+@login_required
 def api_ranking_followed():
     """
     Returns an object with:
