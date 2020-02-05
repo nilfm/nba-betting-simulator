@@ -8,3 +8,4 @@ app/__pycache__
 logs
 my_env
 **.pyc
+.vscode
