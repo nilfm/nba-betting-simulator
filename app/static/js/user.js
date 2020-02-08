@@ -66,8 +66,7 @@ var user = new Vue({
             for (let i = 0; i < day.bets.length; i++) {
                 let bet = day.bets[i];
                 if (bet.finished) {
-                    if (bet.won) balance += Math.floor(bet.amount*(bet.odds-1));
-                    else balance -= bet.amount;
+                    balance += bet.balance;
                 }
             }
             return balance;
