@@ -119,7 +119,6 @@ def api_user_bets(username):
         -complete: BOOLEAN
         -data: Array of days, each with an array of bets
     """
-    # Get URL argument
     try:
         page = int(request.args.get("page", 0))
         page_length = 3
@@ -195,28 +194,29 @@ def api_feed():
         b for b in bets if current_user.is_following(b.user) or current_user == b.user
     ]
     days = sorted(set(b.game.date for b in followed_bets), reverse=True)
-    bets_days = [
-        {
-            "day": day,
-            "games": {
-                b.game_id: {
-                    "info": b.game.to_dict(),
-                    "bets": [
-                        e.to_dict()
-                        for e in followed_bets
-                        if e.game.date == day and e.game_id == b.game_id
-                    ],
-                }
-                for b in followed_bets
-                if b.game.date == day
-            },
-        }
-        for day in days
+
+    # First calculate in dictionary format for linear complexity
+    bets_days = {day: {} for day in days}
+    for bet in followed_bets:
+        if bet.game_id not in bets_days[bet.game.date]:
+            bets_days[bet.game.date][bet.game_id] = {
+                "info": bet.game.to_dict(),
+                "bets": [],
+            }
+        bets_days[bet.game.date][bet.game_id]["bets"].append(bet.to_dict())
+
+    # For simplicity and ability to sort:
+    #    Convert dictionary mapping day to games into array of days
+    #    Convert dictionaries mapping game_id to game into array of games
+    to_return = [
+        {"day": day, "games": [bets_days[day][game] for game in games]}
+        for day, games in bets_days.items()
     ]
-    days_in_page = bets_days[page : page + page_length]
+
+    days_in_page = to_return[page : page + page_length]
     response = {
         "success": True,
-        "complete": page + page_length >= len(bets_days),
+        "complete": page + page_length >= len(to_return),
         "msg": "OK",
         "data": days_in_page,
     }
