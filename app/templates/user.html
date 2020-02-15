@@ -7,7 +7,7 @@
                 <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
                     <h2><% data.username %>'s bets</h2>
                 </div>
-                <div v-if="!data.is_current" style="margin-top: 20px; margin-right: 10px;" align="right" class="center-block col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                <div v-if="!data.is_current" style="margin-top: 20px; margin-left: -25px;" align="right" class="center-block col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
                     <div v-if="!data.is_following">
                         <a class="btn btn-primary" v-on:click.prevent="follow()">
                             Follow
@@ -27,13 +27,29 @@
         <div class="container-fluid">
             <ul class="list-group">
                 <li class="list-group-item won-bet">
-                    Won: <% data.stats.won %> <% 'bet' | pluralize(data.stats.won) %>
+                    Won: <% stats_to_show.won %> <% 'bet' | pluralize(stats_to_show.won) %>
                 </li>
                 <li class="list-group-item lost-bet">
-                    Lost: <% data.stats.lost %> <% 'bet' | pluralize(data.stats.lost) %>
+                    Lost: <% stats_to_show.lost %> <% 'bet' | pluralize(stats_to_show.lost) %>
                 </li>
                 <li class="list-group-item pending-bet">
-                    Pending: <% data.stats.pending %> <% 'bet' | pluralize(data.stats.pending) %>
+                    Pending: <% stats_to_show.pending %> <% 'bet' | pluralize(stats_to_show.pending) %>
+                </li>
+            </ul>
+        </div>
+        <div class="container-fluid">
+            <ul class="list-group">
+                <h4>Best team: <b><% stats_to_show.best_team.long_name %></b></h4>
+                <li class="list-group-item won-bet">
+                    Balance: <% calculate_display_balance(stats_to_show.best_team.total_balance) %> <% 'coin' | pluralize(stats_to_show.best_team.total_balance) %> <br> 
+                    Won <% stats_to_show.best_team.num_wins %> <% 'bet' | pluralize(stats_to_show.best_team.num_wins) %> <br>
+                    Lost <% stats_to_show.best_team.num_losses %> <% 'bet' | pluralize(stats_to_show.best_team.num_losses) %>
+                </li>
+                <h4>Worst team: <b><% stats_to_show.worst_team.long_name %></b></h4>
+                <li class="list-group-item lost-bet">
+                    Balance: <% calculate_display_balance(stats_to_show.worst_team.total_balance) %> <% 'coin' | pluralize(stats_to_show.worst_team.total_balance) %> <br> 
+                    Won <% stats_to_show.worst_team.num_wins %> <% 'bet' | pluralize(stats_to_show.worst_team.num_wins) %> <br>
+                    Lost <% stats_to_show.worst_team.num_losses %> <% 'bet' | pluralize(stats_to_show.worst_team.num_losses) %>           
                 </li>
             </ul>
         </div>

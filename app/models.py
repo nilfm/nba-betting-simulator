@@ -200,6 +200,34 @@ class User(SearchableMixin, UserMixin, db.Model):
         }
         return user_dict
 
+    def stats_by_team(self):
+        all_teams = Team.query.all()
+        teams = {
+            team.short_name: {
+                "short_name": team.short_name,
+                "long_name": team.long_name,
+                "num_bets": 0,
+                "num_wins": 0,
+                "num_losses": 0,
+                "total_balance": 0,
+            }
+            for team in all_teams
+        }
+        all_bets = Bet.query.filter_by(user_id = self.id, finished=True).all()
+        for bet in all_bets:
+            if bet.bet_on_home:
+                current = teams[bet.game.home_team]
+            else:
+                current = teams[bet.game.away_team]
+            
+            current["num_bets"] += 1
+            current["total_balance"] += bet.balance
+            if bet.won:
+                current["num_wins"] += 1
+            else:
+                current["num_losses"] += 1
+        return list(teams.values())
+
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))

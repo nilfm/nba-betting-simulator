@@ -11,6 +11,7 @@ var user = new Vue({
         is_current: true,
         shown_until: 0,
         shown_days: [],
+        stats_to_show: {},
         data: {},
     },
     methods: {
@@ -24,6 +25,7 @@ var user = new Vue({
                 })
                 .then((user_json) => {
                     this.data = user_json;
+                    this.extract_stats(user_json.stats);
                 })
                 .then(() => {
                     this.get_bets_info(this.shown_until);
@@ -56,6 +58,20 @@ var user = new Vue({
                     }
                     complete = bets_json.complete;
                 })
+        },
+        team_stats_comparison: function(t1, t2) {
+            if (t1.total_balance > t2.total_balance) return -1;
+            if (t1.total_balance < t2.total_balance) return 1;
+            return 0;
+        },
+        extract_stats: function(stats) {
+            stats.by_team.sort(this.team_stats_comparison);
+            this.stats_to_show.best_team = stats.by_team[0];
+            this.stats_to_show.worst_team = stats.by_team[stats.by_team.length-1];
+            this.stats_to_show.by_team = stats.by_team;
+            this.stats_to_show.won = stats.won;
+            this.stats_to_show.lost = stats.lost;
+            this.stats_to_show.pending = stats.pending;
         },
         get_bet_class: function(bet) {
             if (bet.won) return "won-bet";

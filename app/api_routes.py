@@ -72,19 +72,29 @@ def api_users():
 def api_user(username):
     """
     Returns:
-        -User as a dictionary, which contains:
-            -id
-            -username
-            -funds
-            -ranking_funds
-        -Information about current user and this user:
-            -is_following
-            -is_current
+        -Information about the user:
+            id
+            username
+            funds
+            ranking_funds
+        -Information relating current user and this user:
+            is_following
+            is_current
         -List of stats, which contains:
-            -number of won bets
-            -number of lost bets
-            -number of pending bets
-            -number of finished bets (won+lost)
+            won: number of won bets
+            lost: number of lost bets
+            pending: number of pending bets
+            finished: number of finished bets (won+lost)
+            by_team: [
+                {
+                    short_name
+                    long_name
+                    total_balance
+                    num_wins
+                    num_losses
+                    num_bets
+                }
+            ]
         -List of pending bets
     """
     user = User.query.filter_by(username=username).first_or_404()
@@ -94,6 +104,7 @@ def api_user(username):
     num_finished = len(finished_bets)
     num_pending = len(pending_bets)
     num_won = sum(bet.won for bet in finished_bets)
+    team_stats = user.stats_by_team()
     data = {
         "is_following": current_user.is_following(user),
         "is_current": current_user.id == user.id,
@@ -102,6 +113,7 @@ def api_user(username):
             "won": num_won,
             "lost": num_finished - num_won,
             "pending": num_pending,
+            "by_team": team_stats,
         },
         "pending_bets": [bet.to_dict() for bet in pending_bets],
     }
