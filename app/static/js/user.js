@@ -1,4 +1,6 @@
 const PAGE_SIZE = 3;
+// Is true when the url is of the form /user/<username> and not /user/<username>/stats or anything else
+const LOAD_BETS = (window.location.pathname.split('/').indexOf("user")  == window.location.pathname.split('/').length-2);
 // Is true when all data has been loaded
 complete = false;
 last_requested_bets = -1;
@@ -7,6 +9,8 @@ var user = new Vue({
     el: '#user',
     delimiters: ['<%', '%>'],
     data: {
+        url_user: null,
+        url_stats: null,
         loaded: false,
         is_current: true,
         shown_until: 0,
@@ -17,7 +21,10 @@ var user = new Vue({
     methods: {
         get_user_info: function() {
             let url_split = window.location.pathname.split('/');
-            let username = url_split[url_split.length-1];
+            let username_index = url_split.indexOf("user") + 1;
+            let username = url_split[username_index];
+            this.url_user = "/user/" + username;
+            this.url_stats = this.url_user + "/stats";
             let endpoint = '/api/user/' + username;
             fetch(endpoint)
                 .then((response) => {
@@ -28,7 +35,9 @@ var user = new Vue({
                     this.extract_stats(user_json.stats);
                 })
                 .then(() => {
-                    this.get_bets_info(this.shown_until);
+                    if (LOAD_BETS) {
+                        this.get_bets_info(this.shown_until);
+                    }
                     this.loaded = true;
                 })
         },
@@ -36,7 +45,7 @@ var user = new Vue({
             // Another request is already serving this data
             last_requested_bets = this.shown_until;
             let url_split = window.location.pathname.split('/');
-            let username = url_split[url_split.length-1];
+            let username = this.data.username;
             let endpoint = '/api/user/' + username + '/bets?page=' + this.shown_until;
             fetch(endpoint)
                 .then((response) => {
@@ -76,6 +85,15 @@ var user = new Vue({
         get_bet_class: function(bet) {
             if (bet.won) return "won-bet";
             else return "lost-bet";
+        },
+        get_team_background_color(position) {
+            // Start: Green (0, 255, 0, 0.2)
+            // End: Red (255, 0, 0, 0.2)
+            // Total: 30 teams (indexed 0-29)
+            let red_component = position/29.0 * 255;
+            let green_component = (29-position)/29.0 * 255;
+            let style = "background-color: rgba(" + red_component + ", " + green_component + ", 0, 0.2) !important"
+            return style;
         },
         calculate_balance: function(day) {
             let balance = 0;

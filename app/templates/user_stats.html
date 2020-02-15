@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <div v-cloak v-if="loaded" id="user">
+        <a :href="url_user">Back to user page</a>
+        <h2><% data.username %>'s stats by team</h2>
+        <div class="container-fluid">
+            <div v-for="(team, pos) in stats_to_show.by_team">
+                <h4><b><% team.long_name %></b></h4>
+                <div class="list-group-item" :style="get_team_background_color(pos)">
+                    Balance: <% calculate_display_balance(team.total_balance) %> <% 'coin' | pluralize(team.total_balance) %> <br> 
+                    Won <% team.num_wins %> <% 'bet' | pluralize(team.num_wins) %> <br>
+                    Lost <% team.num_losses %> <% 'bet' | pluralize(team.num_losses) %>           
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{super()}}
+    <script src="/static/js/user.js"></script>
+{% endblock %}

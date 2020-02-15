@@ -104,6 +104,15 @@ def user(username):
         "user.html", title=f"{username}'s profile", username=username
     )
 
+@app.route("/user/<username>/stats")
+@login_required
+def user_stats(username):
+    # Cause 404 if user does not exist
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template(
+        "user_stats.html", title=f"{username}'s stats", username=username
+    )
+
 
 @app.route("/ranking")
 def ranking():
