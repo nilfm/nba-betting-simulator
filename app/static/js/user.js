@@ -92,7 +92,7 @@ var user = new Vue({
             // Total: 30 teams (indexed 0-29)
             let red_component = position/29.0 * 255;
             let green_component = (29-position)/29.0 * 255;
-            let style = "background-color: rgba(" + red_component + ", " + green_component + ", 0, 0.2) !important"
+            let style = "background-color: rgba(" + red_component + ", " + green_component + ", 0, 0.3) !important"
             return style;
         },
         calculate_balance: function(day) {
