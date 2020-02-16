@@ -241,13 +241,13 @@ class User(SearchableMixin, UserMixin, db.Model):
             helper(team["total"], bet)
             if home:
                 helper(team["home"], bet)
-                if bet.bet_on_home and bet.odds < 1.9:
+                if bet.odds < 1.9:
                     helper(team["favorite"], bet)
                 else:
                     helper(team["underdog"], bet)
             else:
                 helper(team["away"], bet)
-                if not bet.bet_on_home and bet.odds < 1.9:
+                if bet.odds < 1.9:
                     helper(team["favorite"], bet)
                 else:
                     helper(team["underdog"], bet)
