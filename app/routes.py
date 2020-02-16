@@ -104,6 +104,7 @@ def user(username):
         "user.html", title=f"{username}'s profile", username=username
     )
 
+
 @app.route("/user/<username>/stats")
 @login_required
 def user_stats(username):

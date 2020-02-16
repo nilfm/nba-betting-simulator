@@ -251,23 +251,25 @@ class User(SearchableMixin, UserMixin, db.Model):
                     helper(team["favorite"], bet)
                 else:
                     helper(team["underdog"], bet)
-            
+
         teams = get_base_dict()
 
-        all_bets = Bet.query.filter_by(user_id = self.id, finished=True).all()
+        all_bets = Bet.query.filter_by(user_id=self.id, finished=True).all()
         for bet in all_bets:
             bet_for = teams[bet.game.home_team]
             bet_against = teams[bet.game.away_team]
             if not bet.bet_on_home:
                 bet_for, bet_against = bet_against, bet_for
-            
+
             accumulate_stats(bet_for["bet_for"], bet, home=bet.bet_on_home)
             accumulate_stats(bet_against["bet_against"], bet, home=not bet.bet_on_home)
 
         for team in teams.values():
             for key in team["total"].keys():
                 for key2 in team["total"][key].keys():
-                    team["total"][key][key2] = team["bet_for"][key][key2] + team["bet_against"][key][key2]
+                    team["total"][key][key2] = (
+                        team["bet_for"][key][key2] + team["bet_against"][key][key2]
+                    )
 
         return list(teams.values())
 
