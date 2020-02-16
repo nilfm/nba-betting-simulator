@@ -77,6 +77,13 @@ var user = new Vue({
             if (t1.total_balance < t2.total_balance) return 1;
             return 0;
         },
+        team_stats_comparison_average_balance: function(t1, t2) {
+            let b1 = (t1.num_bets == 0 ? 0 : t1.total_balance/t1.num_bets);
+            let b2 = (t2.num_bets == 0 ? 0 : t2.total_balance/t2.num_bets);
+            if (b1 > b2) return -1;
+            if (b1 < b2) return 1;
+            return 0;
+        },
         team_stats_comparison_num_wins: function(t1, t2) {
             if (t1.num_wins > t2.num_wins) return -1;
             if (t1.num_wins < t2.num_wins) return 1;
@@ -100,8 +107,9 @@ var user = new Vue({
             underdog
         sort_by:
             0 -> balance
-            1 -> wins
-            2 -> total bets
+            1 -> average balance
+            2 -> wins
+            3 -> total bets
         */
         set_mode: function(bet_type, select_by, sort_by) {
             if (this.bet_type == bet_type && this.select_by == select_by && this.sort_by == sort_by) return;
@@ -143,8 +151,9 @@ var user = new Vue({
         },
         sort_stats: function(mode) {
             if (mode == 0) this.stats_to_show.by_team.sort(this.team_stats_comparison_balance);
-            else if (mode == 1) this.stats_to_show.by_team.sort(this.team_stats_comparison_num_wins);
-            else if (mode == 2) this.stats_to_show.by_team.sort(this.team_stats_comparison_num_bets);    
+            else if (mode == 1) this.stats_to_show.by_team.sort(this.team_stats_comparison_average_balance);
+            else if (mode == 2) this.stats_to_show.by_team.sort(this.team_stats_comparison_num_wins);
+            else if (mode == 3) this.stats_to_show.by_team.sort(this.team_stats_comparison_num_bets);    
         },
         set_initial_stats: function() {
             this.stats_to_show.best_team = this.stats_to_show.by_team[0];

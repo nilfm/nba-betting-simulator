@@ -237,17 +237,17 @@ class User(SearchableMixin, UserMixin, db.Model):
             else:
                 team["num_losses"] += 1
 
-        def accumulate_stats(team, bet, home):
+        def accumulate_stats(team, bet, home, bet_on):
             helper(team["total"], bet)
             if home:
                 helper(team["home"], bet)
-                if bet.odds < 1.9:
+                if (bet.odds < 1.9) == bet_on:
                     helper(team["favorite"], bet)
                 else:
                     helper(team["underdog"], bet)
             else:
                 helper(team["away"], bet)
-                if bet.odds < 1.9:
+                if (bet.odds < 1.9) == bet_on:
                     helper(team["favorite"], bet)
                 else:
                     helper(team["underdog"], bet)
@@ -261,8 +261,8 @@ class User(SearchableMixin, UserMixin, db.Model):
             if not bet.bet_on_home:
                 bet_for, bet_against = bet_against, bet_for
 
-            accumulate_stats(bet_for["bet_for"], bet, home=bet.bet_on_home)
-            accumulate_stats(bet_against["bet_against"], bet, home=not bet.bet_on_home)
+            accumulate_stats(bet_for["bet_for"], bet, home=bet.bet_on_home, bet_on=True)
+            accumulate_stats(bet_against["bet_against"], bet, home=not bet.bet_on_home, bet_on=False)
 
         for team in teams.values():
             for key in team["total"].keys():
