@@ -4,13 +4,45 @@
     <div v-cloak v-if="loaded" id="user">
         <a :href="url_user">Back to user page</a>
         <h2><% data.username %>'s stats by team</h2>
+
+        <hr>
+
+        <div class="container-fluid">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-info active" v-on:click="sort_stats(0)" title="Only take into account how well a team does when you bet for them">
+                <input type="radio" name="options" id="global-btn" autocomplete="off" checked>
+                Bet for
+            </label>
+            <label class="btn btn-info" v-on:click="sort_stats(1)" title="Only take into account how well a team does when you bet against them">
+                <input type="radio" name="options" id="followed-btn" autocomplete="off">
+                Bet against
+            </label>
+            <label class="btn btn-info" v-on:click="sort_stats(2)" title="Take into account how well a team does when you bet for or against them">
+                <input type="radio" name="options" id="followed-btn" autocomplete="off">
+                Total
+            </label>
+            </div>
+        </div>
+        
+        <br>
+
         <div class="container-fluid">
             <div v-for="(team, pos) in stats_to_show.by_team">
                 <h4><b><% team.long_name %></b></h4>
-                <div class="list-group-item" :style="get_team_background_color(pos)">
-                    Balance: <% calculate_display_balance(team.total_balance) %> <% 'coin' | pluralize(team.total_balance) %> <br> 
-                    Won <% team.num_wins %> <% 'bet' | pluralize(team.num_wins) %> <br>
-                    Lost <% team.num_losses %> <% 'bet' | pluralize(team.num_losses) %>           
+                <div v-if="current_mode == 0" class="list-group-item" :style="get_team_background_color(pos)">
+                    Balance: <% calculate_display_balance(team.bet_for.total_balance) %> <% 'coin' | pluralize(team.bet_for.total_balance) %> <br> 
+                    Won <% team.bet_for.num_wins %> <% 'bet' | pluralize(team.bet_for.num_wins) %> <br>
+                    Lost <% team.bet_for.num_losses %> <% 'bet' | pluralize(team.bet_for.num_losses) %>           
+                </div>
+                <div v-if="current_mode == 1" class="list-group-item" :style="get_team_background_color(pos)">
+                    Balance: <% calculate_display_balance(team.bet_against.total_balance) %> <% 'coin' | pluralize(team.bet_against.total_balance) %> <br> 
+                    Won <% team.bet_against.num_wins %> <% 'bet' | pluralize(team.bet_against.num_wins) %> <br>
+                    Lost <% team.bet_against.num_losses %> <% 'bet' | pluralize(team.bet_against.num_losses) %>           
+                </div>
+                <div v-if="current_mode == 2" class="list-group-item" :style="get_team_background_color(pos)">
+                    Balance: <% calculate_display_balance(team.total.total_balance) %> <% 'coin' | pluralize(team.total.total_balance) %> <br> 
+                    Won <% team.total.num_wins %> <% 'bet' | pluralize(team.total.num_wins) %> <br>
+                    Lost <% team.total.num_losses %> <% 'bet' | pluralize(team.total.num_losses) %>           
                 </div>
                 <br>
             </div>

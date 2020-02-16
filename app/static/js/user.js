@@ -11,6 +11,7 @@ var user = new Vue({
     data: {
         url_user: null,
         url_stats: null,
+        current_mode: -1,
         loaded: false,
         is_current: true,
         shown_until: 0,
@@ -32,7 +33,8 @@ var user = new Vue({
                 })
                 .then((user_json) => {
                     this.data = user_json;
-                    this.extract_stats(user_json.stats);
+                    this.extract_stats();
+                    this.sort_stats(0);
                 })
                 .then(() => {
                     if (LOAD_BETS) {
@@ -68,19 +70,36 @@ var user = new Vue({
                     complete = bets_json.complete;
                 })
         },
-        team_stats_comparison: function(t1, t2) {
-            if (t1.total_balance > t2.total_balance) return -1;
-            if (t1.total_balance < t2.total_balance) return 1;
+        team_stats_comparison_bet_for: function(t1, t2) {
+            if (t1.bet_for.total_balance > t2.bet_for.total_balance) return -1;
+            if (t1.bet_for.total_balance < t2.bet_for.total_balance) return 1;
             return 0;
         },
-        extract_stats: function(stats) {
-            stats.by_team.sort(this.team_stats_comparison);
-            this.stats_to_show.best_team = stats.by_team[0];
-            this.stats_to_show.worst_team = stats.by_team[stats.by_team.length-1];
-            this.stats_to_show.by_team = stats.by_team;
-            this.stats_to_show.won = stats.won;
-            this.stats_to_show.lost = stats.lost;
-            this.stats_to_show.pending = stats.pending;
+        team_stats_comparison_bet_against: function(t1, t2) {
+            if (t1.bet_against.total_balance > t2.bet_against.total_balance) return -1;
+            if (t1.bet_against.total_balance < t2.bet_against.total_balance) return 1;
+            return 0;
+        },
+        team_stats_comparison_total: function(t1, t2) {
+            if (t1.total.total_balance > t2.total.total_balance) return -1;
+            if (t1.total.total_balance < t2.total.total_balance) return 1;
+            return 0;
+        },
+        extract_stats: function() {
+            this.data.stats.by_team.sort(this.team_stats_comparison_bet_for);
+            this.stats_to_show.best_team = this.data.stats.by_team[0];
+            this.stats_to_show.worst_team = this.data.stats.by_team[this.data.stats.by_team.length-1];
+            this.stats_to_show.by_team = this.data.stats.by_team;
+            this.stats_to_show.won = this.data.stats.won;
+            this.stats_to_show.lost = this.data.stats.lost;
+            this.stats_to_show.pending = this.data.stats.pending;           
+        },
+        sort_stats: function(mode) {
+            if (this.current_mode == mode) return;
+            this.current_mode = mode;
+            if (mode == 0) this.stats_to_show.by_team.sort(this.team_stats_comparison_bet_for);
+            else if (mode == 1) this.stats_to_show.by_team.sort(this.team_stats_comparison_bet_against);
+            else if (mode == 2) this.stats_to_show.by_team.sort(this.team_stats_comparison_total);    
         },
         get_bet_class: function(bet) {
             if (bet.won) return "won-bet";
@@ -111,6 +130,7 @@ var user = new Vue({
         },
         follow: function() {
             let endpoint = '/api/follow/' + this.data.username;
+            console.log(endpoint);
             fetch(endpoint,
                 {
                 method: 'post'

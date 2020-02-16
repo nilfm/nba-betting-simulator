@@ -89,10 +89,24 @@ def api_user(username):
                 {
                     short_name
                     long_name
-                    total_balance
-                    num_wins
-                    num_losses
-                    num_bets
+                    bet_for {
+                        total_balance
+                        num_wins
+                        num_losses
+                        num_bets
+                    }
+                    bet_against {
+                        total_balance
+                        num_wins
+                        num_losses
+                        num_bets
+                    }
+                    total {
+                        total_balance
+                        num_wins
+                        num_losses
+                        num_bets
+                    }
                 }
             ]
         -List of pending bets

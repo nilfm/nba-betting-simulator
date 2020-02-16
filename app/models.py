@@ -201,31 +201,58 @@ class User(SearchableMixin, UserMixin, db.Model):
         return user_dict
 
     def stats_by_team(self):
-        all_teams = Team.query.all()
-        teams = {
-            team.short_name: {
-                "short_name": team.short_name,
-                "long_name": team.long_name,
-                "num_bets": 0,
-                "num_wins": 0,
-                "num_losses": 0,
-                "total_balance": 0,
-            }
-            for team in all_teams
-        }
-        all_bets = Bet.query.filter_by(user_id = self.id, finished=True).all()
-        for bet in all_bets:
-            if bet.bet_on_home:
-                current = teams[bet.game.home_team]
-            else:
-                current = teams[bet.game.away_team]
-            
+        # Helper method
+        # is_for == True means that the bet is for the team
+        # is_for == False means the bet is against the team
+        def accumulate_stats(team, bet, is_for):
+            current = team["bet_for"] if is_for else team["bet_against"]
             current["num_bets"] += 1
             current["total_balance"] += bet.balance
             if bet.won:
                 current["num_wins"] += 1
             else:
                 current["num_losses"] += 1
+
+        all_teams = Team.query.all()
+        teams = {
+            team.short_name: {
+                "short_name": team.short_name,
+                "long_name": team.long_name,
+                "bet_for": {
+                    "num_bets": 0,
+                    "num_wins": 0,
+                    "num_losses": 0,
+                    "total_balance": 0,
+                },
+                "bet_against": {
+                    "num_bets": 0,
+                    "num_wins": 0,
+                    "num_losses": 0,
+                    "total_balance": 0,
+                },
+                "total": {
+                    "num_bets": 0,
+                    "num_wins": 0,
+                    "num_losses": 0,
+                    "total_balance": 0,
+                },
+            }
+            for team in all_teams
+        }
+        all_bets = Bet.query.filter_by(user_id = self.id, finished=True).all()
+        for bet in all_bets:
+            bet_for = teams[bet.game.home_team]
+            bet_against = teams[bet.game.away_team]
+            if not bet.bet_on_home:
+                bet_for, bet_against = bet_against, bet_for
+            
+            accumulate_stats(bet_for, bet, is_for=True)
+            accumulate_stats(bet_against, bet, is_for=False)
+
+        for team in teams.values():
+            for key in team["total"].keys():
+                team["total"][key] = team["bet_for"][key] + team["bet_against"][key]
+
         return list(teams.values())
 
     @login.user_loader
