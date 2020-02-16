@@ -38,16 +38,16 @@
         <div class="container-fluid">
             <h4>Best team: <b><% stats_to_show.best_team.long_name %></b></h4>
             <div class="list-group-item won-bet">
-                Balance: <% calculate_display_balance(stats_to_show.best_team.bet_for.total_balance) %> <% 'coin' | pluralize(stats_to_show.best_team.bet_for.total_balance) %> <br> 
-                Won <% stats_to_show.best_team.bet_for.num_wins %> <% 'bet' | pluralize(stats_to_show.best_team.bet_for.num_wins) %> <br>
-                Lost <% stats_to_show.best_team.bet_for.num_losses %> <% 'bet' | pluralize(stats_to_show.best_team.bet_for.num_losses) %>
+                Balance: <% calculate_display_balance(stats_to_show.best_team.total_balance) %> <% 'coin' | pluralize(stats_to_show.best_team.total_balance) %> <br> 
+                Won <% stats_to_show.best_team.num_wins %> <% 'bet' | pluralize(stats_to_show.best_team.num_wins) %> <br>
+                Lost <% stats_to_show.best_team.num_losses %> <% 'bet' | pluralize(stats_to_show.best_team.num_losses) %>
             </div>
             <br>
             <h4>Worst team: <b><% stats_to_show.worst_team.long_name %></b></h4>
             <div class="list-group-item lost-bet">
-                Balance: <% calculate_display_balance(stats_to_show.worst_team.bet_for.total_balance) %> <% 'coin' | pluralize(stats_to_show.worst_team.bet_for.total_balance) %> <br> 
-                Won <% stats_to_show.worst_team.bet_for.num_wins %> <% 'bet' | pluralize(stats_to_show.worst_team.bet_for.num_wins) %> <br>
-                Lost <% stats_to_show.worst_team.bet_for.num_losses %> <% 'bet' | pluralize(stats_to_show.worst_team.bet_for.num_losses) %>
+                Balance: <% calculate_display_balance(stats_to_show.worst_team.total_balance) %> <% 'coin' | pluralize(stats_to_show.worst_team.total_balance) %> <br> 
+                Won <% stats_to_show.worst_team.num_wins %> <% 'bet' | pluralize(stats_to_show.worst_team.num_wins) %> <br>
+                Lost <% stats_to_show.worst_team.num_losses %> <% 'bet' | pluralize(stats_to_show.worst_team.num_losses) %>
             </div>
         </div>
         <hr>    

@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from sqlalchemy.exc import IntegrityError
 import jwt
+import copy
 
 
 class SearchableMixin:
@@ -201,44 +202,58 @@ class User(SearchableMixin, UserMixin, db.Model):
         return user_dict
 
     def stats_by_team(self):
-        # Helper method
-        # is_for == True means that the bet is for the team
-        # is_for == False means the bet is against the team
-        def accumulate_stats(team, bet, is_for):
-            current = team["bet_for"] if is_for else team["bet_against"]
-            current["num_bets"] += 1
-            current["total_balance"] += bet.balance
-            if bet.won:
-                current["num_wins"] += 1
-            else:
-                current["num_losses"] += 1
-
-        all_teams = Team.query.all()
-        teams = {
-            team.short_name: {
-                "short_name": team.short_name,
-                "long_name": team.long_name,
-                "bet_for": {
-                    "num_bets": 0,
-                    "num_wins": 0,
-                    "num_losses": 0,
-                    "total_balance": 0,
-                },
-                "bet_against": {
-                    "num_bets": 0,
-                    "num_wins": 0,
-                    "num_losses": 0,
-                    "total_balance": 0,
-                },
-                "total": {
-                    "num_bets": 0,
-                    "num_wins": 0,
-                    "num_losses": 0,
-                    "total_balance": 0,
-                },
+        def get_base_dict():
+            all_teams = Team.query.all()
+            level_1_dict = {
+                "num_bets": 0,
+                "num_wins": 0,
+                "num_losses": 0,
+                "total_balance": 0,
             }
-            for team in all_teams
-        }
+            level_2_dict = {
+                "total": level_1_dict.copy(),
+                "home": level_1_dict.copy(),
+                "away": level_1_dict.copy(),
+                "favorite": level_1_dict.copy(),
+                "underdog": level_1_dict.copy(),
+            }
+            teams = {
+                team.short_name: {
+                    "short_name": team.short_name,
+                    "long_name": team.long_name,
+                    "bet_for": copy.deepcopy(level_2_dict),
+                    "bet_against": copy.deepcopy(level_2_dict),
+                    "total": copy.deepcopy(level_2_dict),
+                }
+                for team in all_teams
+            }
+            return teams
+
+        def helper(team, bet):
+            team["num_bets"] += 1
+            team["total_balance"] += bet.balance
+            if bet.won:
+                team["num_wins"] += 1
+            else:
+                team["num_losses"] += 1
+
+        def accumulate_stats(team, bet, home):
+            helper(team["total"], bet)
+            if home:
+                helper(team["home"], bet)
+                if bet.bet_on_home and bet.odds < 1.9:
+                    helper(team["favorite"], bet)
+                else:
+                    helper(team["underdog"], bet)
+            else:
+                helper(team["away"], bet)
+                if not bet.bet_on_home and bet.odds < 1.9:
+                    helper(team["favorite"], bet)
+                else:
+                    helper(team["underdog"], bet)
+            
+        teams = get_base_dict()
+
         all_bets = Bet.query.filter_by(user_id = self.id, finished=True).all()
         for bet in all_bets:
             bet_for = teams[bet.game.home_team]
@@ -246,12 +261,13 @@ class User(SearchableMixin, UserMixin, db.Model):
             if not bet.bet_on_home:
                 bet_for, bet_against = bet_against, bet_for
             
-            accumulate_stats(bet_for, bet, is_for=True)
-            accumulate_stats(bet_against, bet, is_for=False)
+            accumulate_stats(bet_for["bet_for"], bet, home=bet.bet_on_home)
+            accumulate_stats(bet_against["bet_against"], bet, home=not bet.bet_on_home)
 
         for team in teams.values():
             for key in team["total"].keys():
-                team["total"][key] = team["bet_for"][key] + team["bet_against"][key]
+                for key2 in team["total"][key].keys():
+                    team["total"][key][key2] = team["bet_for"][key][key2] + team["bet_against"][key][key2]
 
         return list(teams.values())
 

@@ -3,24 +3,45 @@
 {% block app_content %}
     <div v-cloak v-if="loaded" id="user">
         <a :href="url_user">Back to user page</a>
-        <h2><% data.username %>'s stats by team</h2>
+        <h2><% data.username %>'s stats dashboard</h2>
 
         <hr>
 
         <div class="container-fluid">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-info active" v-on:click="sort_stats(0)" title="Only take into account how well a team does when you bet for them">
-                <input type="radio" name="options" id="global-btn" autocomplete="off" checked>
-                Bet for
-            </label>
-            <label class="btn btn-info" v-on:click="sort_stats(1)" title="Only take into account how well a team does when you bet against them">
-                <input type="radio" name="options" id="followed-btn" autocomplete="off">
-                Bet against
-            </label>
-            <label class="btn btn-info" v-on:click="sort_stats(2)" title="Take into account how well a team does when you bet for or against them">
-                <input type="radio" name="options" id="followed-btn" autocomplete="off">
-                Total
-            </label>
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Bet type
+                    <span class="caret"></span></button>
+                    <ul id="types" class="dropdown-menu">
+                        <li id="type-bet_for" class="active"><a href="#" @click.prevent="set_type('bet_for')">Bet for</a></li>
+                        <li id="type-bet_against"><a href="#" @click.prevent="set_type('bet_against')">Bet against</a></li>
+                        <li id="type-total"><a href="#" @click.prevent="set_type('total')">Total</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select by
+                    <span class="caret"></span></button>
+                    <ul id="selects" class="dropdown-menu">
+                        <li id="select-total" class="active"><a href="#" @click.prevent="set_select('total')">Total</a></li>
+                        <li id="select-home"><a href="#" @click.prevent="set_select('home')">Home</a></li>
+                        <li id="select-away"><a href="#" @click.prevent="set_select('away')">Away</a></li>
+                        <li id="select-favorite"><a href="#" @click.prevent="set_select('favorite')">Favorite</a></li>
+                        <li id="select-underdog"><a href="#" @click.prevent="set_select('underdog')">Underdog</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="btn-group">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Sort by
+                    <span class="caret"></span></button>
+                    <ul id="sorts" class="dropdown-menu">
+                        <li id="sort-0" class="active"><a href="#" @click.prevent="set_sort(0)">Balance</a></li>
+                        <li id="sort-1"><a href="#" @click.prevent="set_sort(1)">Number of wins</a></li>
+                        <li id="sort-2"><a href="#" @click.prevent="set_sort(2)">Number of bets</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
         
@@ -29,20 +50,10 @@
         <div class="container-fluid">
             <div v-for="(team, pos) in stats_to_show.by_team">
                 <h4><b><% team.long_name %></b></h4>
-                <div v-if="current_mode == 0" class="list-group-item" :style="get_team_background_color(pos)">
-                    Balance: <% calculate_display_balance(team.bet_for.total_balance) %> <% 'coin' | pluralize(team.bet_for.total_balance) %> <br> 
-                    Won <% team.bet_for.num_wins %> <% 'bet' | pluralize(team.bet_for.num_wins) %> <br>
-                    Lost <% team.bet_for.num_losses %> <% 'bet' | pluralize(team.bet_for.num_losses) %>           
-                </div>
-                <div v-if="current_mode == 1" class="list-group-item" :style="get_team_background_color(pos)">
-                    Balance: <% calculate_display_balance(team.bet_against.total_balance) %> <% 'coin' | pluralize(team.bet_against.total_balance) %> <br> 
-                    Won <% team.bet_against.num_wins %> <% 'bet' | pluralize(team.bet_against.num_wins) %> <br>
-                    Lost <% team.bet_against.num_losses %> <% 'bet' | pluralize(team.bet_against.num_losses) %>           
-                </div>
-                <div v-if="current_mode == 2" class="list-group-item" :style="get_team_background_color(pos)">
-                    Balance: <% calculate_display_balance(team.total.total_balance) %> <% 'coin' | pluralize(team.total.total_balance) %> <br> 
-                    Won <% team.total.num_wins %> <% 'bet' | pluralize(team.total.num_wins) %> <br>
-                    Lost <% team.total.num_losses %> <% 'bet' | pluralize(team.total.num_losses) %>           
+                <div class="list-group-item" :style="get_team_background_color(pos)">
+                    Balance: <% calculate_display_balance(team.total_balance) %> <% 'coin' | pluralize(team.total_balance) %> <br> 
+                    Won <% team.num_wins %> <% 'bet' | pluralize(team.num_wins) %> <br>
+                    Lost <% team.num_losses %> <% 'bet' | pluralize(team.num_losses) %>           
                 </div>
                 <br>
             </div>
